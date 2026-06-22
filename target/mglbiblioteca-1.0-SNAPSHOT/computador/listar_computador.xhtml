@@ -1,0 +1,85 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="jakarta.faces.facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:h="jakarta.faces.html"
+      xmlns:f="jakarta.faces.core">
+
+    <body>
+
+        <ui:composition template="./../WEB-INF/templates/template_computador.xhtml">
+
+            <ui:define name="content">
+                <h:form id="frmComputador">
+                    
+                    <p:panel header="Computadores Registados" style="margin-top:20px;">
+
+                        <div style="margin-bottom: 15px; display: flex; align-items: center; gap: 10px;">
+                            <h:outputLabel value="Filtrar por Status:" style="font-weight: bold;" />
+                            <p:selectOneMenu value="#{computadorBean.filtroStatus}" style="width:180px;">
+                                <f:selectItem itemLabel="-- Todos --" itemValue="" />
+                                <f:selectItem itemLabel="Disponível" itemValue="Disponível" />
+                                <f:selectItem itemLabel="Em Uso" itemValue="Em Uso" />
+                                <f:selectItem itemLabel="Manutenção" itemValue="Manutenção" />
+                            </p:selectOneMenu>
+                            <p:commandButton value="Pesquisar" action="#{computadorBean.filtrar}" 
+                                             update="tblComputadores" icon="pi pi-filter" 
+                                             styleClass="ui-button-outlined ui-button-secondary" />
+                        </div>
+
+                        <p:dataTable id="tblComputadores" value="#{computadorBean.listaComputadores}" var="comp" 
+                                     rows="10" paginator="true"
+                                     paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLink} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                                     currentPageReportTemplate="{startRecord}-{endRecord} de {totalRecords} registos"
+                                     emptyMessage="Nenhum computador encontrado.">
+
+                            <p:column headerText="Codigo" style="width: 70px; text-align: center;">
+                                <h:outputText value="#{comp.idEquipamento}" />
+                            </p:column>
+
+                            <p:column headerText="Referência (Etiqueta)">
+                                <h:outputText value="#{comp.refEquipamento}" />
+                            </p:column>
+
+                            <p:column headerText="Localização">
+                                <h:outputText value="#{comp.localizacao}" />
+                            </p:column>
+
+                            <p:column headerText="Status" style="text-align: center; width: 140px;">
+                                <h:outputText value="#{comp.status}" 
+                                              style="padding: 4px 8px; border-radius: 4px; font-weight: bold;
+                                              background-color: #{comp.status == 'Disponível' ? '#c8e6c9' : (comp.status == 'Em Uso' ? '#ffd8b2' : '#ffcdd2')};
+                                              color: #{comp.status == 'Disponível' ? '#256029' : (comp.status == 'Em Uso' ? '#805b36' : '#c63737')};" />
+                            </p:column>
+
+                            <p:column headerText="Ações" style="width: 150px; text-align: center;">
+                                <p:commandButton icon="pi pi-pencil" action="#{computadorBean.editar(comp)}"
+                                                 update="frmComputador" styleClass="ui-button-warning ui-button-sm" 
+                                                 style="margin-right: 5px;" title="Editar" />
+
+                                <p:commandButton icon="pi pi-trash" action="#{computadorBean.delete(comp.idEquipamento)}" 
+                                                 update="frmComputador" styleClass="ui-button-danger ui-button-sm" 
+                                                 title="Eliminar">
+                                    <p:confirm header="Confirmação" message="Deseja realmente eliminar este equipamento?" icon="pi pi-exclamation-triangle" />
+                                </p:commandButton>
+                            </p:column>
+                        </p:dataTable>
+
+                        <p:confirmDialog global="true" showEffect="fade" hideEffect="fade" responsive="true" width="350">
+                            <p:commandButton value="Não" type="button" styleClass="ui-confirmdialog-no ui-button-flat"/>
+                            <p:commandButton value="Sim" type="button" styleClass="ui-confirmdialog-yes ui-button-danger" />
+                        </p:confirmDialog>
+                    </p:panel>
+                    
+                </h:form>
+                </ui:define>
+
+            <ui:define name="bottom">
+                bottom
+            </ui:define>
+
+        </ui:composition>
+
+    </body>
+</html>

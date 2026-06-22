@@ -1,0 +1,145 @@
+/* style.css - Biblioteca */
+
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+body{
+    background-color: #f4f6f9;
+    color: #333;
+}
+
+/* Cabeçalho */
+header{
+    background-color: #003366;
+    color: white;
+    text-align: center;
+    padding: 20px;
+}
+
+header h1{
+    font-size: 32px;
+}
+
+/* Menu */
+nav{
+    background-color: #00509e;
+}
+
+nav ul{
+    list-style: none;
+    display: flex;
+    justify-content: center;
+}
+
+nav ul li{
+    margin: 0 15px;
+}
+
+nav ul li a{
+    display: block;
+    color: white;
+    text-decoration: none;
+    padding: 15px;
+    transition: 0.3s;
+}
+
+nav ul li a:hover{
+    background-color: #003366;
+    border-radius: 5px;
+}
+
+/* Conteúdo */
+.container{
+    width: 90%;
+    max-width: 1200px;
+    margin: 20px auto;
+}
+
+/* Cartões */
+.card{
+    background: white;
+    padding: 20px;
+    margin-bottom: 20px;
+    border-radius: 10px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.card h2{
+    color: #003366;
+    margin-bottom: 10px;
+}
+
+/* Formulários */
+form{
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+}
+
+input,
+select,
+textarea{
+    width: 100%;
+    padding: 10px;
+    margin-top: 5px;
+    margin-bottom: 15px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+button{
+    background-color: #00509e;
+    color: white;
+    border: none;
+    padding: 12px 20px;
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+button:hover{
+    background-color: #003366;
+}
+
+/* Tabelas */
+table{
+    width: 100%;
+    border-collapse: collapse;
+    background: white;
+}
+
+table th,
+table td{
+    border: 1px solid #ddd;
+    padding: 12px;
+    text-align: left;
+}
+
+table th{
+    background-color: #003366;
+    color: white;
+}
+
+/* Rodapé */
+footer{
+    background-color: #003366;
+    color: white;
+    text-align: center;
+    padding: 15px;
+    margin-top: 20px;
+}
+
+/* Responsivo */
+@media (max-width: 768px){
+    nav ul{
+        flex-direction: column;
+    }
+
+    nav ul li{
+        text-align: center;
+        margin: 0;
+    }
+}
