@@ -1,4 +1,3 @@
-
 package skylink.mglbiblioteca.MODEL0;
 
 import java.io.Serializable;

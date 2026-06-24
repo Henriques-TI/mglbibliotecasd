@@ -148,19 +148,18 @@ public class LeituraDAO {
     }
 
     private Leitura mapearResultSet(ResultSet rs) throws SQLException {
-        Leitura l = new Leitura();
-        l.setIdLeitura(rs.getInt("id_leitura"));
-        l.setIdUtilizador(rs.getInt("id_utilizador"));
-        l.setIdLivro(rs.getInt("id_livro"));
-        l.setDataRetirada(rs.getTimestamp("data_retirada"));
-        l.setDataDevolucaoPrevista(rs.getDate("data_devolucao_prevista"));
-        l.setDataDevolucaoReal(rs.getTimestamp("data_devolucao_real"));
-        l.setStatus(rs.getString("status"));
-        
-        l.setNomeUtilizador(rs.getString("nome_utilizador"));
-        l.setTituloLivro(rs.getString("titulo_livro"));
-        return l;
-    }
+    Leitura leitura = new Leitura();
+    
+    leitura.setIdLeitura(rs.getInt("id_leitura"));
+    leitura.setIdUtilizador(rs.getInt("id_utilizador"));
+    leitura.setIdLivro(rs.getInt("id_livro"));
+    leitura.setDataRetirada(rs.getTimestamp("data_retirada"));
+    leitura.setDataDevolucaoPrevista(rs.getDate("data_devolucao_prevista"));
+    leitura.setDataDevolucaoReal(rs.getTimestamp("data_devolucao_real"));
+    leitura.setStatus(rs.getString("status"));
+    
+    return leitura; 
+}
 
     public String buscarStatusAtual(int idLeitura) throws SQLException {
         String sql = "SELECT status FROM leitura WHERE id_leitura = ?";

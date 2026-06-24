@@ -1,11 +1,14 @@
 skylink\mglbiblioteca\MB\CategoriaComputadorBean.class
 skylink\mglbiblioteca\MODEL0\CategoriaComputador.class
 skylink\mglbiblioteca\JakartaRestConfiguration.class
+skylink\mglbiblioteca\dao\CategoriaLivroDAO.class
 skylink\mglbiblioteca\MB\LeituraBean.class
 skylink\mglbiblioteca\dao\LeituraDAO.class
 skylink\mglarmazem\bdutil\ConnectionDB.class
 skylink\mglbiblioteca\resources\JakartaEE10Resource.class
 skylink\mglbiblioteca\dao\CategoriaComputadorDAO.class
+skylink\mglbiblioteca\MODEL0\CategoriaLivro.class
+skylink\mglbiblioteca\MB\CategoriaLivroBean.class
 skylink\mglbiblioteca\MODEL0\Leitura.class
 skylink\mglbiblioteca\dao\ComputadorDAO.class
 skylink\mglbiblioteca\MB\ComputadorBean.class

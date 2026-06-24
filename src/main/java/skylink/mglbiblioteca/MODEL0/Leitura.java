@@ -19,8 +19,7 @@ public class Leitura implements Serializable {
     private Date dataDevolucaoReal;
     private String status;
 
-    private String nomeUtilizador;
-    private String tituloLivro;
+   
 
     public Leitura() {
     }
@@ -81,21 +80,8 @@ public class Leitura implements Serializable {
         this.status = status;
     }
 
-    public String getNomeUtilizador() {
-        return nomeUtilizador;
-    }
-
-    public void setNomeUtilizador(String nomeUtilizador) {
-        this.nomeUtilizador = nomeUtilizador;
-    }
-
-    public String getTituloLivro() {
-        return tituloLivro;
-    }
-
-    public void setTituloLivro(String tituloLivro) {
-        this.tituloLivro = tituloLivro;
-    }
+   
+   
 
     @Override
     public int hashCode() {
@@ -111,4 +97,10 @@ public class Leitura implements Serializable {
         final Leitura other = (Leitura) obj;
         return Objects.equals(this.idLeitura, other.idLeitura);
     }
+
+    @Override
+    public String toString() {
+        return "Leitura{" + "idLeitura=" + idLeitura + ", idUtilizador=" + idUtilizador + ", idLivro=" + idLivro + ", dataRetirada=" + dataRetirada + ", dataDevolucaoPrevista=" + dataDevolucaoPrevista + ", dataDevolucaoReal=" + dataDevolucaoReal + ", status=" + status + '}';
+    }
+    
 }
