@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+
+    <ui:composition template="./../WEB-INF/templates/template_leitura.xhtml">
+        <ui:define name="title">Gestão de Empréstimos - MGLBiblioteca</ui:define>
+
+        <ui:define name="content">
+            <div class="container-fluid">
+                <div class="page-header">
+                    <div class="row align-items-center">
+                        <div class="col">
+                            <h1 class="page-title">
+                                <i class="fas fa-book-open"></i> Gestão de Empréstimos
+                            </h1>
+                            <p class="text-muted">Gerencie os empréstimos de livros da biblioteca</p>
+                        </div>
+                        <div class="col-auto">
+                            <h:commandButton value="Novo Empréstimo" 
+                                             styleClass="btn btn-primary"
+                                             action="#{leituraBean.limpar()}">
+                                <i class="fas fa-plus-circle"></i>
+                            </h:commandButton>
+                        </div>
+                    </div>
+                </div>
+
+                <h:messages globalOnly="true" 
+                            styleClass="messages" 
+                            infoClass="alert alert-success" 
+                            errorClass="alert alert-danger" 
+                            warnClass="alert alert-warning" />
+
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="card-title">
+                            <i class="fas fa-edit"></i> 
+                            #{leituraBean.leitura.idLeitura == null ? 'Novo Empréstimo' : 'Editar Empréstimo'}
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <h:form id="formLeitura">
+                            <div class="row">
+                                <h:inputHidden value="#{leituraBean.leitura.idLeitura}" />
+
+                                <div class="col-md-6 mb-3">
+                                    <label for="idUtilizador" class="form-label">
+                                        <i class="fas fa-user"></i> Utilizador *
+                                    </label>
+                                    <h:inputText id="idUtilizador" 
+                                                 value="#{leituraBean.leitura.idUtilizador}" 
+                                                 styleClass="form-control"
+                                                 required="true"
+                                                 requiredMessage="Selecione um utilizador">
+                                        <f:validator validatorId="customValidator" />
+                                    </h:inputText>
+                                    <small class="form-text text-muted">ID do utilizador que está a fazer o empréstimo</small>
+                                </div>
+
+                                <div class="col-md-6 mb-3">
+                                    <label for="idLivro" class="form-label">
+                                        <i class="fas fa-book"></i> Livro *
+                                    </label>
+                                    <h:inputText id="idLivro" 
+                                                 value="#{leituraBean.leitura.idLivro}" 
+                                                 styleClass="form-control"
+                                                 required="true"
+                                                 requiredMessage="Selecione um livro">
+                                        <f:validator validatorId="customValidator" />
+                                    </h:inputText>
+                                    <small class="form-text text-muted">ID do livro a ser emprestado</small>
+                                </div>
+
+                                <div class="col-md-4 mb-3">
+                                    <label for="dataRetirada" class="form-label">
+                                        <i class="fas fa-calendar-check"></i> Data de Retirada
+                                    </label>
+                                    <h:inputText id="dataRetirada" 
+                                                 value="#{leituraBean.leitura.dataRetirada}" 
+                                                 styleClass="form-control">
+                                        <f:convertDateTime pattern="dd/MM/yyyy HH:mm" />
+                                    </h:inputText>
+                                    <small class="form-text text-muted">Data e hora da retirada</small>
+                                </div>
+
+                                <div class="col-md-4 mb-3">
+                                    <label for="dataDevolucaoPrevista" class="form-label">
+                                        <i class="fas fa-calendar-day"></i> Data Devolução Prevista *
+                                    </label>
+                                    <h:inputText id="dataDevolucaoPrevista" 
+                                                 value="#{leituraBean.leitura.dataDevolucaoPrevista}" 
+                                                 styleClass="form-control"
+                                                 required="true"
+                                                 requiredMessage="Informe a data de devolução prevista">
+                                        <f:convertDateTime pattern="dd/MM/yyyy" />
+                                        <f:validator validatorId="dateValidator" />
+                                    </h:inputText>
+                                    <small class="form-text text-muted">Data limite para devolução do livro</small>
+                                </div>
+
+                                
+                                <div class="col-md-4 mb-3">
+                                    <label for="status" class="form-label">
+                                        <i class="fas fa-info-circle"></i> Status
+                                    </label>
+                                    <h:selectOneMenu id="status" 
+                                                     value="#{leituraBean.leitura.status}" 
+                                                     styleClass="form-select">
+                                        <f:selectItem itemValue="Lendo" itemLabel="📖 Lendo" />
+                                        <f:selectItem itemValue="Devolvido" itemLabel="✅ Devolvido" />
+                                        <f:selectItem itemValue="Atrasado" itemLabel="⚠️ Atrasado" />
+                                    </h:selectOneMenu>
+                                </div>
+                            </div>
+
+                            <div class="row mt-3">
+                                <div class="col-12">
+                                    <div class="btn-group" role="group">
+                                        <h:commandButton value="💾 Salvar" 
+                                                         styleClass="btn btn-primary"
+                                                         action="#{leituraBean.save()}">
+                                            <i class="fas fa-save"></i>
+                                        </h:commandButton>
+
+                                        <h:commandButton value="🗑️ Limpar" 
+                                                         styleClass="btn btn-secondary"
+                                                         action="#{leituraBean.limpar()}">
+                                            <i class="fas fa-undo"></i>
+                                        </h:commandButton>
+
+                                        <h:button value="📋 Listar" 
+                                                  styleClass="btn btn-info"
+                                                  outcome="listaLeituras.xhtml">
+                                            <i class="fas fa-list"></i>
+                                        </h:button>
+                                    </div>
+                                </div>
+                            </div>
+                        </h:form>
+                    </div>
+                </div>
+
+                <div class="card mt-4">
+                    <div class="card-header">
+                        <h5 class="card-title">
+                            <i class="fas fa-history"></i> Empréstimos Recentes
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <h:form id="formLista">
+                            <div class="table-responsive">
+                                <h:dataTable value="#{leituraBean.listaLeituras}" 
+                                             var="item" 
+                                             styleClass="table table-hover">
+
+                                    <h:column>
+                                        <f:facet name="header">ID</f:facet>
+                                            #{item.idLeitura}
+                                    </h:column>
+
+                                    <h:column>
+                                        <f:facet name="header">Utilizador</f:facet>
+                                            #{item.idUtilizador}
+                                    </h:column>
+
+                                    <h:column>
+                                        <f:facet name="header">Livro</f:facet>
+                                            #{item.idLivro}
+                                    </h:column>
+
+                                    <h:column>
+                                        <f:facet name="header">Data Retirada</f:facet>
+                                        <h:outputText value="#{item.dataRetirada}">
+                                            <f:convertDateTime pattern="dd/MM/yyyy HH:mm" />
+                                        </h:outputText>
+                                    </h:column>
+
+                                    <h:column>
+                                        <f:facet name="header">Devolução Prevista</f:facet>
+                                        <h:outputText value="#{item.dataDevolucaoPrevista}">
+                                            <f:convertDateTime pattern="dd/MM/yyyy" />
+                                        </h:outputText>
+                                    </h:column>
+
+                                    <h:column>
+                                        <f:facet name="header">Status</f:facet>
+                                        <span class="status-badge #{item.status == 'Lendo' ? 'em-uso' : item.status == 'Devolvido' ? 'concluido' : 'atrasado'}">
+                                            #{item.status}
+                                        </span>
+                                    </h:column>
+
+                                    <h:column>
+                                        <f:facet name="header">Ações</f:facet>
+                                        <div class="btn-group btn-group-sm" role="group">
+
+                                            <f:ajax execute="@this" render="formLeitura" />
+
+
+                                            <h:commandButton value="✅" 
+                                                             styleClass="btn btn-success"
+                                                             action="#{leituraBean.devolver(item.idLeitura)}"
+                                                             onclick="if (!confirm('Confirmar devolução do livro?'))
+                                                                         return false;">
+                                                <f:ajax execute="@this" render="@form" />
+                                            </h:commandButton>
+
+                                            <h:commandButton value="🗑️" 
+                                                             styleClass="btn btn-danger"
+                                                             action="#{leituraBean.delete(item.idLeitura)}"
+                                                             onclick="if (!confirm('Confirmar exclusão do registro?'))
+                                                                         return false;">
+                                                <f:ajax execute="@this" render="@form" />
+                                            </h:commandButton>
+                                        </div>
+                                    </h:column>
+                                </h:dataTable>
+                            </div>
+                        </h:form>
+                    </div>
+                </div>
+            </div>
+        </ui:define>
+    </ui:composition>
+</html>

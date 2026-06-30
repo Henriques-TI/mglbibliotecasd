@@ -1,0 +1,44 @@
+<?xml version='1.0' encoding='UTF-8' ?> 
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="jakarta.faces.facelets"
+      xmlns:h="jakarta.faces.html">
+
+    <h:head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+        <h:outputStylesheet name="estilos.css" library="css"/>
+        <title>Gestão da Biblioteca São Domingos</title>
+    </h:head>
+
+    <h:body>
+
+
+        <div id="top" class="top">
+            <ui:insert name="top">Gestão de Livros</ui:insert>
+        </div>
+        <div>
+            <div id="left">
+                <ui:insert name="left">
+                    <h3>Menu Principal</h3>
+                    <ul>
+
+                        <li><h:link value="🏠 Voltar ao Início" outcome="/index" /></li>
+
+                        <li><h:link value="💼 Listar Livros" outcome="/livro/listar_livros"/></li>
+
+                        <li><h:link value="💼 Registar Novo Livro" outcome="/livro/cadastro_livro"/></li>
+
+
+                    </ul>
+
+
+                </ui:insert>
+            </div>
+            <div id="content" class="left_content">
+                <ui:insert name="content">Content</ui:insert>
+            </div>
+        </div>
+    </h:body>
+
+</html>

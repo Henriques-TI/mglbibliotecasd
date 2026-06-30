@@ -6,8 +6,9 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-import skylink.mglarmazem.bdutil.ConnectionDB;
-import skylink.mglbiblioteca.MODEL0.CategoriaComputador;
+import skylink.mglbiblioteca.model.CategoriaComputador;
+import skylink.mglbiblioteca.bdutil.ConnectionDB;
+
 
 /**
  *

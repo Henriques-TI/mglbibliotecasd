@@ -5,50 +5,56 @@
       xmlns:h="jakarta.faces.html">
 
     <h:head>
-
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-        <h:outputStylesheet name="estilos.css" library="css"/>
+        <h:outputStylesheet name="estilo.css" library="css"/>
         <title>Gestão da Biblioteca</title>
     </h:head>
+    
     <h:body>
         <div class="container">
-            <div class="header">
+            
+            <!-- TOPO / HEADER -->
+            <header class="header">
                 <ui:insert name="top">
-
-                    <h1>🌟 Gestão da Biblioteca</h1>
-                    <p>Skylink</p>
-
+                    <h1>📚 Gestão da Biblioteca</h1>
+                    <p class="brand-group">Skylink</p>
                 </ui:insert>
-            </div>
+            </header>
 
+            <!-- MENU LATERAL -->
             <nav class="nav">
                 <ui:insert name="left">
                     <h3>Menu Principal</h3>
                     <ul>
-
                         <li><h:link value="🏠 Voltar ao Início" outcome="/index" /></li>
-
-                        <li><h:link value="💼 Gestão de Computadores" outcome="/computador/index_computador"/></li>
+                        <li><h:link value="💻 Gestão de Computadores" outcome="/computador/index_computador"/></li>
+                        <li><h:link value="🤝 Gestão de Empréstimos" outcome="/leitura/index_leitura"/></li>
+                        <li><h:link value="📖 Gestão de Livros" outcome="/livro/index_livro"/></li>
+                        <li><h:link value="🗄️ Gestão das Prateleiras" outcome="/prateleira/index_prateleira"/></li>
+                        <li><h:link value="🏷️ Gestão das Categorias" outcome="/categoria/index_categoria"/></li>
                     </ul>
-
                 </ui:insert>
             </nav>
+            
+            <!-- CONTEÚDO PRINCIPAL -->
             <main class="main">
-                <ui:insert name="content"></ui:insert>
+                <ui:insert name="content">
+                    <!-- Conteúdo padrão caso a página interna esteja vazia -->
+                    <div class="welcome-container">
+                        <h2>📊 Gestão Inteligente de Biblioteca</h2>
+                        <p>Mais eficiência, organização e produtividade para a sua Biblioteca.</p>
+                    </div>
+                </ui:insert>
             </main>
 
             <footer class="footer">
                 <ui:insert name="bottom">
-
                     <p>&copy; 2026 - Desenvolvido pelo grupo Skylink</p>
                     <p>📧 contato@exemplo.com | 📱 (244) 99999-9999</p>
-
-
-
                 </ui:insert>
             </footer>
+            
         </div>
     </h:body>
-
 </html>

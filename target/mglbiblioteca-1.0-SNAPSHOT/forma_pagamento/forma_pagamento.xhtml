@@ -1,0 +1,122 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="jakarta.faces.facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:h="jakarta.faces.html"
+      xmlns:f="jakarta.faces.core">
+
+    <body>
+
+        <ui:composition template="./../WEB-INF/templates/template_prateleira.xhtml">
+
+            <ui:define name="top">
+                Forma de Pagamento
+            </ui:define>
+
+            <ui:define name="content">
+                <h:form id="frmPagamento">
+                    <p:growl id="msgs" showDetail="true" life="3000"/>
+
+                    <div class="ui-g">
+                        <div class="ui-g-12 ui-md-4">
+                            <p:panel header="Registar Pagamento / Recebimento">
+                                
+                                <h:inputHidden value="#{pagamentoBean.pagamento.idPagamento}" />
+
+                                <h:panelGrid columns="1" style="width:100%;" styleClass="ui-fluid">
+                                    
+                                    <p:outputLabel value="Origem / Tipo de Receita:" for="origem" style="font-weight: bold; margin-top: 10px;" />
+                                    <p:selectOneMenu id="origem" value="#{pagamentoBean.pagamento.tipoOrigem}" 
+                                                     required="true" requiredMessage="Selecione a origem do pagamento">
+                                        <f:selectItem itemLabel="-- Selecione a Origem --" itemValue="" noSelectionOption="true" />
+                                        <f:selectItems value="#{pagamentoBean.tiposOrigem}" var="tipo" 
+                                                       itemLabel="#{tipo}" itemValue="#{tipo}" />
+                                    </p:selectOneMenu>
+
+                                    <p:outputLabel value="Método de Pagamento:" for="metodo" style="font-weight: bold; margin-top: 10px;" />
+                                    <p:selectOneMenu id="metodo" value="#{pagamentoBean.pagamento.metodoPagamento}" 
+                                                     required="true" requiredMessage="Selecione o método utilizado">
+                                        <f:selectItem itemLabel="-- Selecione o Método --" itemValue="" noSelectionOption="true" />
+                                        <f:selectItems value="#{pagamentoBean.metodosPagamento}" var="metodo" 
+                                                       itemLabel="#{metodo}" itemValue="#{metodo}" />
+                                    </p:selectOneMenu>
+
+                                    <p:outputLabel value="Valor Comercial (AOA):" for="valor" style="font-weight: bold; margin-top: 10px;" />
+                                    <p:inputNumber id="valor" value="#{pagamentoBean.pagamento.valor}" 
+                                                   symbol=" Kz" symbolPosition="s" decimalSeparator="," thousandSeparator="."
+                                                   minValue="0.00" required="true" requiredMessage="Informe o valor da transação" />
+
+                                    <p:outputLabel value="Observações / Detalhes:" for="obs" style="font-weight: bold; margin-top: 10px;" />
+                                    <p:inputTextarea id="obs" value="#{pagamentoBean.pagamento.observacao}" 
+                                                     rows="3" placeholder="Ex: Multa por atraso do livro X, Inscrição, etc." />
+                                </h:panelGrid>
+
+                                <p:divider />
+
+                                <div style="text-align: center; margin-top: 10px;">
+                                    <p:commandButton value="Processar Pagamento" action="#{pagamentoBean.salvar}" 
+                                                     update="frmPagamento" icon="pi pi-check-circle" 
+                                                     styleClass="ui-button-success" style="width: 100%; font-weight: bold;" />
+                                </div>
+                            </p:panel>
+                        </div>
+
+                        <div class="ui-g-12 ui-md-8">
+                            <p:panel header="Histórico de Fluxo de Caixa">
+                                
+                                <p:dataTable id="tblPagamentos" value="#{pagamentoBean.pagamentos}" var="pag"
+                                             selectionMode="single" selection="#{pagamentoBean.pagamentoSelecionado}"
+                                             rowKey="#{pag.idPagamento}" rows="10" paginator="true"
+                                             paginatorPosition="bottom" emptyMessage="Nenhum pagamento registado no sistema.">
+
+                                    <p:column headerText="Ref. Caixa" style="width: 80px; text-align: center;">
+                                        <h:outputText value="#{pag.idPagamento}" />
+                                    </p:column>
+
+                                    <p:column headerText="Origem / Destino">
+                                        <h:outputText value="#{pag.tipoOrigem}" />
+                                    </p:column>
+
+                                    <p:column headerText="Forma de Entrada">
+                                        <span class="customer-badge status-qualified" style="padding: 3px 8px; border-radius: 4px; background: #e2daf2; color: #4a3b66; font-size: 0.9em; font-weight: bold;">
+                                            #{pag.metodoPagamento}
+                                        </span>
+                                    </p:column>
+
+                                    <p:column headerText="Valor Arrecadado" style="text-align: right; width: 140px; font-weight: bold;">
+                                        <h:outputText value="#{pag.valor}">
+                                            <f:convertNumber type="currency" currencySymbol="Kz " locale="pt_AO" />
+                                        </h:outputText>
+                                    </p:column>
+
+                                    <p:column headerText="Observação">
+                                        <h:outputText value="#{pag.observacao}" />
+                                    </p:column>
+
+                                    <p:column headerText="Gestão" style="width: 80px; text-align: center;">
+                                        <p:commandButton icon="pi pi-exclamation-triangle" title="Estornar Transação"
+                                                         action="#{pagamentoBean.estornar}"
+                                                         update="frmPagamento" process="@this"
+                                                         styleClass="ui-button-danger ui-button-flat">
+                                            <f:setPropertyActionListener value="#{pag}" target="#{pagamentoBean.pagamentoSelecionado}" />
+                                            <p:confirm header="Confirmar Estorno" message="Atenção: Deseja anular/estornar este registo financeiro permanentemente?" icon="pi pi-exclamation-circle" />
+                                        </p:commandButton>
+                                    </p:column>
+                                </p:dataTable>
+                            </p:panel>
+                        </div>
+                    </div>
+                </h:form>
+
+                <p:confirmDialog global="true" showEffect="fade" hideEffect="fade" responsive="true" width="380">
+                    <p:commandButton value="Cancelar" type="button" styleClass="ui-confirmdialog-no ui-button-flat"/>
+                    <p:commandButton value="Anular Registo" type="button" styleClass="ui-confirmdialog-yes ui-button-danger" />
+                </p:confirmDialog>
+            
+            </ui:define>
+
+        </ui:composition>
+
+    </body>
+</html>

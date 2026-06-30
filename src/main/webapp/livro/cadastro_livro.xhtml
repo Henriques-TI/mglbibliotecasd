@@ -1,0 +1,92 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="jakarta.faces.facelets"
+      xmlns:h="jakarta.faces.html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="jakarta.faces.core">
+
+    <body>
+
+        <ui:composition template="./../WEB-INF/templates/template_livro.xhtml">
+            <ui:define name="content">
+                <h:form id="frmCadastroLivro">
+                    <p:growl id="msgs" showDetail="true" life="3000"/>
+
+                    <p:panel header="#{livroBean.livro.idLivro == null ? 'Registar Novo Livro' : 'Editar Livro'}" 
+                             style="max-width:800px; margin: 0 auto; margin-bottom:20px;">
+                        
+                        <h:inputHidden value="#{livroBean.livro.idLivro}" />
+
+                        <h:panelGrid columns="2" cellpadding="7" style="width:100%;">
+
+                            <h:outputLabel value="Código Interno (ID):" for="idLivro" style="font-weight: bold;" rendered="#{livroBean.livro.idLivro != null}" />
+                            <p:inputText id="idLivro" value="#{livroBean.livro.idLivro}" readonly="true" style="width:100%" rendered="#{livroBean.livro.idLivro != null}" />
+
+                            <h:outputLabel value="Título do Livro:" for="titulo" style="font-weight: bold;" />
+                            <p:inputText id="titulo" value="#{livroBean.livro.titulo}" 
+                                         required="true" requiredMessage="O título do livro é obrigatório"
+                                         style="width:100%" />
+
+                            <h:outputLabel value="Autor:" for="autor" style="font-weight: bold;" />
+                            <p:inputText id="autor" value="#{livroBean.livro.autor}" 
+                                         required="true" requiredMessage="O autor é obrigatório"
+                                         style="width:100%" />
+
+                            <h:outputLabel value="Editora:" for="editora" style="font-weight: bold;" />
+                            <p:inputText id="editora" value="#{livroBean.livro.editora}" 
+                                         required="true" requiredMessage="A editora é obrigatória"
+                                         style="width:100%" />
+
+                            <h:outputLabel value="Ano de Publicação:" for="ano" style="font-weight: bold;" />
+                            <p:spinner id="ano" value="#{livroBean.livro.anoPublicacao}" 
+                                       min="1500" max="2026" buttons="horizontal" style="width:100%" />
+
+                            <h:outputLabel value="Categoria:" for="categoria" style="font-weight: bold;" />
+                            <p:selectOneMenu id="categoria" value="#{livroBean.livro.categoriaLivro}" 
+                                             required="true" requiredMessage="Selecione uma categoria"
+                                             converter="omnifaces.SelectItemsConverter" style="width:100%;">
+                                <f:selectItem itemLabel="-- Selecione uma Categoria --" itemValue="" noSelectionOption="true" />
+                                <f:selectItems value="#{livroBean.categorias}" var="cat" 
+                                               itemLabel="#{cat.descricaoCategoriaLivro}" itemValue="#{cat}" />
+                            </p:selectOneMenu>
+
+                            <h:outputLabel value="Localização (Prateleira):" for="prateleira" style="font-weight: bold;" />
+                            <p:selectOneMenu id="prateleira" value="#{livroBean.livro.prateleira}" 
+                                             required="true" requiredMessage="Selecione a prateleira de destino"
+                                             converter="omnifaces.SelectItemsConverter" style="width:100%;">
+                                <f:selectItem itemLabel="-- Selecione uma Prateleira --" itemValue="" noSelectionOption="true" />
+                                <f:selectItems value="#{livroBean.prateleiras}" var="prat" 
+                                               itemLabel="#{prat.posicaoPrateleira}" itemValue="#{prat}" />
+                            </p:selectOneMenu>
+
+                            <h:outputLabel value="Quantidade de Exemplares:" for="qtd" style="font-weight: bold;" />
+                            <p:inputNumber id="qtd" value="#{livroBean.livro.quantidadeDisponivel}" decimalPlaces="0" style="width:100%"/>
+
+                        </h:panelGrid>
+
+                        <p:divider />
+
+                        <div style="text-align: center; margin-top: 15px;">
+                            <p:commandButton value="Guardar Livro" action="#{livroBean.salvar}" 
+                                             update="frmCadastroLivro" icon="pi pi-save" 
+                                             styleClass="ui-button-success" style="margin-right: 10px;" />
+
+                            <p:commandButton value="Limpar Novo" action="#{livroBean.limparPesquisa}" 
+                                             update="frmCadastroLivro" icon="pi pi-refresh" process="@this" 
+                                             styleClass="ui-button-secondary" />
+                        </div>
+                    </p:panel>
+
+
+                    <p:confirmDialog global="true" showEffect="fade" hideEffect="fade" responsive="true" width="350">
+                        <p:commandButton value="Não" type="button" styleClass="ui-confirmdialog-no ui-button-flat"/>
+                        <p:commandButton value="Sim" type="button" styleClass="ui-confirmdialog-yes ui-button-danger" />
+                    </p:confirmDialog>
+
+                </h:form>
+            </ui:define>
+        </ui:composition>
+
+    </body>
+</html>

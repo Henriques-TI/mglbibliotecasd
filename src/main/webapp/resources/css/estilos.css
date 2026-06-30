@@ -1,219 +1,356 @@
- /* Reset básico */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+/* ==========================================================================
+   Tema "Biblioteca São Domingos" — versão Literária Quente
+   Aplica a paleta da capa (madeira / luz de candeeiro / lombadas) ao
+   template de gestão: barra superior, menu lateral e área de conteúdo,
+   incluindo os componentes PrimeFaces usados nas páginas internas.
+   ========================================================================== */
 
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            line-height: 1.6;
-            color: #333;
-            background-color: #f4f4f4;
-        }
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Work+Sans:wght@400;500;600&family=JetBrains+Mono:wght@500&display=swap');
 
-        /* Container principal com CSS Grid */
-        .container {
-            display: grid;
-            grid-template-areas:
-                "header header header"
-                "nav main main"
-                "footer footer footer";
-            grid-template-columns: 250px 1fr 1fr;
-            grid-template-rows: auto 1fr auto;
-            min-height: 100vh;
-            gap: 0;
-        }
+:root {
+    /* --- Cor: estrutura (barra superior / menu) --- */
+    --ink-dark: #14161e;
+    --ink-dark-soft: #1d2030;
 
-        /* Estilos do Cabeçalho */
-        .header {
-            grid-area: header;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            padding: 2rem;
-            text-align: center;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-        }
+    /* --- Cor: acentos (lombadas / candeeiro) --- */
+    --gold: #e8a33d;
+    --gold-soft: #f2c14e;
+    --burgundy: #8a2a38;
+    --burgundy-hover: #74222e;
+    --emerald: #25785c;
+    --emerald-hover: #1e6249;
+    --sapphire: #2a5d86;
+    --violet: #6a4a9c;
 
-        .header h1 {
-            font-size: 2.5rem;
-            margin-bottom: 0.5rem;
-        }
+    /* --- Cor: área de conteúdo (página/pergaminho) --- */
+    --parchment: #f4ead2;
+    --content-bg: #fbf6ec;
+    --content-surface: #ffffff;
+    --content-border: #e8dcc3;
+    --ink-text: #2b2014;
+    --ink-text-muted: #7a6b53;
+    --secondary: #9c8f78;
+    --secondary-hover: #87795f;
 
-        .header p {
-            font-size: 1.1rem;
-            opacity: 0.9;
-        }
+    /* --- Tipografia --- */
+    --font-display: 'Playfair Display', Georgia, serif;
+    --font-body: 'Work Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    --font-mono: 'JetBrains Mono', 'Courier New', monospace;
 
-        /* Estilos do Painel de Navegação */
-        .nav {
-            grid-area: nav;
-            background-color: #2c3e50;
-            color: white;
-            padding: 2rem 1rem;
-        }
+    /* --- Espaçamento --- */
+    --space-2: 8px;
+    --space-3: 12px;
+    --space-4: 16px;
+    --space-5: 24px;
+    --space-6: 32px;
 
-        .nav h3 {
-            margin-bottom: 1rem;
-            padding-bottom: 0.5rem;
-            border-bottom: 2px solid #e74c3c;
-            display: inline-block;
-        }
+    /* --- Raio --- */
+    --radius-sm: 6px;
+    --radius-md: 10px;
 
-        .nav ul {
-            list-style: none;
-            margin-top: 1rem;
-        }
+    /* --- Elevação --- */
+    --shadow-sm: 0 1px 3px rgba(43, 32, 20, 0.08);
+    --shadow-md: 0 8px 20px rgba(20, 22, 30, 0.18);
 
-        .nav ul li {
-            margin-bottom: 0.8rem;
-        }
+    --transition: 180ms ease;
+}
 
-        .nav ul li a {
-            color: #ecf0f1;
-            text-decoration: none;
-            display: block;
-            padding: 0.5rem;
-            border-radius: 5px;
-            transition: all 0.3s ease;
-        }
+* { box-sizing: border-box; }
 
-        .nav ul li a:hover {
-            background-color: #e74c3c;
-            padding-left: 1rem;
-        }
+html, body {
+    margin: 0;
+    padding: 0;
+    min-height: 100%;
+}
 
-        /* Estilos do Conteúdo Principal */
-        .main {
-            grid-area: main;
-            background-color: white;
-            padding: 2rem;
-        }
+body {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    font-family: var(--font-body);
+    background: var(--content-bg);
+    color: var(--ink-text);
+    -webkit-font-smoothing: antialiased;
+}
 
-        .card {
-            background-color: #f9f9f9;
-            border-radius: 8px;
-            padding: 1.5rem;
-            margin-bottom: 1.5rem;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-            transition: transform 0.3s ease;
-        }
+@media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { transition: none !important; animation: none !important; }
+}
 
-        .card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
-        }
+/* ==========================================================================
+   Barra superior — identidade da biblioteca
+   ========================================================================== */
+#top.top {
+    display: flex;
+    align-items: center;
+    background: linear-gradient(135deg, var(--ink-dark) 0%, #1a1d2b 100%);
+    color: var(--parchment);
+    padding: var(--space-4) var(--space-6);
+    font-family: var(--font-display);
+    font-size: 1.3rem;
+    font-weight: 600;
+    letter-spacing: 0.01em;
+    box-shadow: var(--shadow-md);
+    position: sticky;
+    top: 0;
+    z-index: 10;
+}
+/* Ícone fixo, independente do texto inserido por ui:insert/ui:define */
+#top.top::before {
+    content: "📖";
+    margin-right: var(--space-3);
+    font-size: 1.25rem;
+}
 
-        .card h2 {
-            color: #2c3e50;
-            margin-bottom: 1rem;
-        }
+/* ==========================================================================
+   Estrutura geral (menu lateral + conteúdo)
+   Seleciona o div imediatamente após a barra superior — não precisa
+   adicionar classes no template.xhtml.
+   ========================================================================== */
+#top + div {
+    flex: 1 1 auto;
+    display: flex;
+    align-items: stretch;
+}
 
-        .card h3 {
-            color: #e74c3c;
-            margin: 1rem 0 0.5rem 0;
-        }
+/* ==========================================================================
+   Menu lateral
+   ========================================================================== */
+#left {
+    flex: 0 0 240px;
+    width: 240px;
+    background: var(--ink-dark-soft);
+    color: var(--parchment);
+    padding: var(--space-6) var(--space-4);
+    border-right: 1px solid rgba(244, 234, 210, 0.08);
+}
 
-        .grid-demo {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 1rem;
-            margin-top: 1rem;
-        }
+#left h3 {
+    font-family: var(--font-display);
+    font-size: 0.85rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--gold-soft);
+    margin: 0 0 var(--space-4);
+    padding-bottom: var(--space-3);
+    border-bottom: 1px solid rgba(244, 234, 210, 0.12);
+}
 
-        .grid-item {
-            background-color: #667eea;
-            color: white;
-            padding: 1rem;
-            text-align: center;
-            border-radius: 5px;
-        }
+#left ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+}
 
-        /* Estilos do Rodapé */
-        .footer {
-            grid-area: footer;
-            background-color: #2c3e50;
-            color: white;
-            text-align: center;
-            padding: 1.5rem;
-        }
+#left li { margin: 0; }
 
-        .footer p {
-            margin: 0.5rem 0;
-        }
+#left a {
+    display: block;
+    padding: var(--space-3) var(--space-3);
+    border-radius: var(--radius-sm);
+    color: var(--parchment);
+    font-size: 0.92rem;
+    font-weight: 500;
+    border-left: 3px solid transparent;
+    transition: background var(--transition), border-color var(--transition), color var(--transition);
+}
+#left a:hover {
+    background: rgba(232, 163, 61, 0.12);
+    border-left-color: var(--gold);
+    color: var(--gold-soft);
+}
+#left a:focus-visible {
+    outline: 2px solid var(--gold-soft);
+    outline-offset: 2px;
+}
 
-        .footer a {
-            color: #e74c3c;
-            text-decoration: none;
-        }
+/* ==========================================================================
+   Área de conteúdo
+   ========================================================================== */
+#content.left_content {
+    flex: 1 1 auto;
+    padding: var(--space-6);
+    background: var(--content-bg);
+}
 
-        .footer a:hover {
-            text-decoration: underline;
-        }
+#content.left_content > * {
+    max-width: 1100px;
+    margin-left: auto;
+    margin-right: auto;
+}
 
-        /* Media Queries para Responsividade */
-        @media (max-width: 768px) {
-            .container {
-                grid-template-areas:
-                    "header"
-                    "nav"
-                    "main"
-                    "footer";
-                grid-template-columns: 1fr;
-                grid-template-rows: auto auto 1fr auto;
-            }
+#content.left_content h1,
+#content.left_content h2 {
+    font-family: var(--font-display);
+    color: var(--ink-text);
+    font-weight: 600;
+}
 
-            .header h1 {
-                font-size: 1.8rem;
-            }
+/* ==========================================================================
+   Painéis PrimeFaces (formulários de cadastro, blocos de conteúdo)
+   ========================================================================== */
+.ui-panel {
+    border: 1px solid var(--content-border) !important;
+    box-shadow: var(--shadow-sm) !important;
+    border-radius: var(--radius-md) !important;
+    background: var(--content-surface) !important;
+    overflow: hidden;
+}
+.ui-panel .ui-panel-titlebar {
+    background: linear-gradient(135deg, var(--burgundy) 0%, var(--burgundy-hover) 100%) !important;
+    color: #ffffff !important;
+    border: none !important;
+    padding: var(--space-3) var(--space-5) !important;
+    font-family: var(--font-display) !important;
+    font-size: 1.1em !important;
+    font-weight: 600 !important;
+}
 
-            .nav {
-                padding: 1rem;
-            }
+.ui-outputlabel {
+    color: var(--ink-text) !important;
+    font-family: var(--font-body) !important;
+    font-size: 0.82em !important;
+    font-weight: 600 !important;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    margin-bottom: var(--space-2);
+    display: inline-block;
+}
 
-            .nav ul {
-                display: flex;
-                justify-content: center;
-                flex-wrap: wrap;
-                gap: 1rem;
-            }
+.ui-inputfield,
+.ui-selectonemenu {
+    border-radius: var(--radius-sm) !important;
+    border: 1px solid var(--content-border) !important;
+    font-family: var(--font-body) !important;
+    transition: border-color 150ms ease, box-shadow 150ms ease !important;
+}
+.ui-inputfield.ui-state-focus,
+.ui-selectonemenu.ui-state-focus {
+    border-color: var(--gold) !important;
+    box-shadow: 0 0 0 3px rgba(232, 163, 61, 0.22) !important;
+    outline: none !important;
+}
 
-            .nav ul li {
-                margin-bottom: 0;
-            }
+.ui-panelgrid .ui-panelgrid-cell {
+    padding: var(--space-3) var(--space-4) !important;
+}
 
-            .nav ul li a {
-                padding: 0.5rem 1rem;
-            }
+/* ==========================================================================
+   Tabela de Livros
+   ========================================================================== */
+.ui-datatable {
+    border-radius: var(--radius-md) !important;
+    overflow: hidden;
+    box-shadow: var(--shadow-sm);
+}
+.ui-datatable thead th {
+    background: #f1e6ce !important;
+    color: var(--ink-text) !important;
+    border: none !important;
+    border-bottom: 2px solid var(--content-border) !important;
+    padding: var(--space-3) var(--space-4) !important;
+    font-family: var(--font-body) !important;
+    font-weight: 600 !important;
+    font-size: 0.82em !important;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+}
+.ui-datatable tbody td {
+    border: none !important;
+    border-bottom: 1px solid var(--content-border) !important;
+    padding: var(--space-3) var(--space-4) !important;
+    font-size: 0.95em;
+    transition: background-color 150ms ease;
+}
+.ui-datatable .ui-datatable-data tr:not(.ui-state-highlight):hover td {
+    background-color: #fdf6e8 !important;
+}
+.ui-datatable .ui-datatable-data tr.ui-state-highlight td {
+    background: rgba(106, 74, 156, 0.12) !important;
+    color: var(--ink-text) !important;
+    cursor: pointer;
+}
+.ui-datatable .ui-datatable-data tr.ui-datatable-even td {
+    background-color: #fdf9f0 !important;
+}
 
-            .main {
-                padding: 1rem;
-            }
+/* Etiqueta de cota / género — mesma assinatura visual da capa,
+   útil para classificar livros na listagem (opcional, ver nota abaixo) */
+.cota-tag {
+    display: inline-block;
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    letter-spacing: 0.02em;
+    padding: 2px 8px;
+    border-radius: 4px;
+    background: rgba(138, 42, 56, 0.08);
+    color: var(--burgundy);
+}
 
-            .card {
-                padding: 1rem;
-            }
+/* ==========================================================================
+   Botões
+   ========================================================================== */
+.ui-button {
+    border-radius: var(--radius-sm) !important;
+    font-family: var(--font-body) !important;
+    font-weight: 600 !important;
+    background: linear-gradient(135deg, var(--gold) 0%, var(--gold-soft) 100%) !important;
+    border-color: var(--gold) !important;
+    color: #2b1a0a !important;
+    transition: filter 150ms ease, transform 150ms ease, box-shadow 150ms ease !important;
+}
+.ui-button:hover {
+    filter: brightness(1.04);
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-sm);
+}
+.ui-button:focus-visible {
+    outline: 2px solid var(--burgundy);
+    outline-offset: 2px;
+}
 
-            .grid-demo {
-                grid-template-columns: 1fr;
-            }
-        }
+.ui-button-success {
+    background: var(--emerald) !important; /* Guardar / Registar livro */
+    border-color: var(--emerald) !important;
+    color: #ffffff !important;
+}
+.ui-button-success:hover {
+    background: var(--emerald-hover) !important;
+    border-color: var(--emerald-hover) !important;
+}
 
-        @media (max-width: 480px) {
-            .header h1 {
-                font-size: 1.5rem;
-            }
+.ui-button-secondary {
+    background: var(--secondary) !important;
+    border-color: var(--secondary) !important;
+    color: #ffffff !important;
+}
+.ui-button-secondary:hover {
+    background: var(--secondary-hover) !important;
+    border-color: var(--secondary-hover) !important;
+}
 
-            .header p {
-                font-size: 0.9rem;
-            }
+/* ==========================================================================
+   Divisores
+   ========================================================================== */
+.ui-divider-horizontal {
+    margin: var(--space-4) 0 !important;
+    border-top: 1px solid var(--content-border) !important;
+}
 
-            .card h2 {
-                font-size: 1.3rem;
-            }
-
-            .grid-item {
-                padding: 0.8rem;
-                font-size: 0.9rem;
-            }
-        }
+/* ==========================================================================
+   Responsivo: menu lateral colapsa acima de conteúdo em ecrãs pequenos
+   ========================================================================== */
+@media (max-width: 720px) {
+    #top + div { flex-direction: column; }
+    #left {
+        width: 100%;
+        flex: 0 0 auto;
+        border-right: none;
+        border-bottom: 1px solid rgba(244, 234, 210, 0.08);
+    }
+    #content.left_content { padding: var(--space-5); }
+}

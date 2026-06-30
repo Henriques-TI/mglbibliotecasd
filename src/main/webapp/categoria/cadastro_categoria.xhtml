@@ -1,0 +1,71 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="jakarta.faces.facelets"
+      xmlns:h="jakarta.faces.html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="jakarta.faces.core">
+
+    <body>
+
+        <ui:composition template="./../WEB-INF/templates/template_categoria.xhtml">
+
+            <ui:define name="content">
+                <h:form id="frmCategoria">
+                    <p:growl id="msgs" showDetail="true" life="3000"/>
+
+                    <div class="ui-g">
+                        <div class="ui-g-12 ui-md-4">
+                            <p:panel header="#{categoriaLivroBean.categoriaLivro.idCategoriaLivro == null ? 'Nova Categoria Livro' : 'Editar Categoria Livro'}">
+
+                                <h:inputHidden value="#{categoriaLivroBean.categoriaLivro.idCategoriaLivro}" />
+
+                                <h:panelGrid columns="1" style="width:100%;" styleClass="ui-fluid">
+                                    <p:outputLabel value="Descrição da Categoria:" for="descricao" style="font-weight: bold; margin-top: 10px;" />
+                                    <p:inputTextarea id="descricao" value="#{categoriaLivroBean.categoriaLivro.descricaoCategoriaLivro}" 
+                                                     rows="3" autoResize="false" required="true" requiredMessage="A descrição é obrigatória."/>
+                                </h:panelGrid>
+
+                                <p:divider />
+
+                                <div style="text-align: center; margin-top: 10px;">
+                                    <p:commandButton value="Guardar" action="#{categoriaLivroBean.salvar}" 
+                                                     update="frmCategoria" icon="pi pi-save" 
+                                                     styleClass="ui-button-success" style="width: 100%; margin-bottom: 10px;" />
+
+                                    <p:commandButton value="Limpar Novo" action="#{categoriaLivroBean.limparPesquisa}" 
+                                                     update="frmCategoria" icon="pi pi-refresh" process="@this"
+                                                     styleClass="ui-button-secondary" style="width: 100%;" />
+                                </div>
+                            </p:panel>
+                        </div>
+
+                        <div class="ui-g-12 ui-md-8">
+                            <p:panel header="Categorias Cadastradas">
+                                <p:dataTable id="tblCategorias" value="#{categoriaLivroBean.listaCategorias}" var="cat" 
+                                             emptyMessage="Nenhuma categoria encontrada." rows="5" paginator="true" paginatorPosition="bottom">
+                                    
+                                    <p:column headerText="ID" style="width: 50px; text-align: center;">
+                                        <h:outputText value="#{cat.idCategoriaLivro}" />
+                                    </p:column>
+
+                                    <p:column headerText="Descrição">
+                                        <h:outputText value="#{cat.descricaoCategoriaLivro}" />
+                                    </p:column>
+
+                                    <p:column headerText="Ações" style="width: 100px; text-align: center;">
+                                        <p:commandButton icon="pi pi-pencil" update="frmCategoria" process="@this" styleClass="ui-button-warning ui-button-flat">
+                                            <f:setPropertyActionListener value="#{cat}" target="#{categoriaLivroBean.categoriaLivro}" />
+                                        </p:commandButton>
+                                    </p:column>
+                                </p:dataTable>
+                            </p:panel>
+                        </div>
+                    </div>
+                </h:form>
+            </ui:define>
+
+        </ui:composition>
+
+    </body>
+</html>

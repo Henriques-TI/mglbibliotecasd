@@ -1,0 +1,104 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="jakarta.faces.facelets"
+      xmlns:h="jakarta.faces.html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="jakarta.faces.core">
+
+    <body>
+
+        <ui:composition template="./../WEB-INF/templates/template_prateleira.xhtml">
+            <ui:define name="content">
+                <div>
+                    <h:form id="frmPrateleira">
+                        <p:growl id="msgs" showDetail="true" life="3000"/>
+
+                        <div class="ui-g">
+                            <div class="ui-g-12 ui-md-4">
+                                <p:panel header="#{prateleiraBean.prateleira.idPrateleira == null ? 'Nova Prateleira' : 'Editar Prateleira'}">
+
+                                    <h:inputHidden value="#{prateleiraBean.prateleira.idPrateleira}" />
+
+                                    <h:panelGrid columns="1" style="width:100%;" styleClass="ui-fluid">
+                                        <p:outputLabel value="Localização da Prateleira:" for="localizacao" style="font-weight: bold; margin-top: 10px;" />
+                                        <p:inputText id="localizacao" value="#{prateleiraBean.prateleira.posicaoPrateleira}" 
+                                                     required="true" requiredMessage="A localização é obrigatória" />
+
+                                        <p:outputLabel value="Classificação da Prateleira:" for="descricao" style="font-weight: bold; margin-top: 10px;" />
+                                        <p:inputTextarea id="descricao" value="#{prateleiraBean.prateleira.classificacao}" 
+                                                         rows="3" autoResize="false" />
+                                    </h:panelGrid>
+
+                                    <p:divider />
+
+                                    <div style="text-align: center; margin-top: 10px;">
+                                        <p:commandButton value="Guardar" action="#{prateleiraBean.salvar}" 
+                                                         update="frmPrateleira" icon="pi pi-save" 
+                                                         styleClass="ui-button-success" style="width: 100%; margin-bottom: 10px;" />
+
+                                        <p:commandButton value="Limpar Novo" action="#{prateleiraBean.limparPesquisa}" 
+                                                         update="frmPrateleira" icon="pi pi-refresh" process="@this"
+                                                         styleClass="ui-button-secondary" style="width: 100%;" />
+                                    </div>
+                                </p:panel>
+                            </div>
+
+                            <div class="ui-g-12 ui-md-8">
+                                <p:panel header="Prateleiras Registadas">
+
+                                    <div class="ui-inputgroup" style="margin-bottom: 15px;">
+                                        <p:inputText placeholder="Pesquisar por Posição/Classificação..." 
+                                                     value="#{prateleiraBean.filtroPosicao}" style="width: 100%;" />
+                                        <p:commandButton icon="pi pi-search" action="#{prateleiraBean.pesquisar}" 
+                                                         update="frmPrateleira:tblPrateleiras frmPrateleira:msgs" title="Pesquisar" />
+                                        <p:commandButton icon="pi pi-times" action="#{prateleiraBean.limparPesquisa}" 
+                                                         update="frmPrateleira" styleClass="ui-button-warning" title="Limpar Filtro" />
+                                    </div>
+
+                                    <p:dataTable id="tblPrateleiras" value="#{prateleiraBean.prateleiras}" var="prat"
+                                                 selectionMode="single" selection="#{prateleiraBean.prateleiraSelecionada}"
+                                                 rowKey="#{prat.idPrateleira}" rows="10" paginator="true"
+                                                 paginatorPosition="bottom" emptyMessage="Nenhuma prateleira localizada.">
+
+                                        <p:column headerText="Codigo de Registo" style="width: 50px; text-align: center;">
+                                            <h:outputText value="#{prat.idPrateleira}" />
+                                        </p:column>
+
+                                        <p:column headerText="Posição">
+                                            <h:outputText value="#{prat.posicaoPrateleira}" />
+                                        </p:column>
+
+                                        <p:column headerText="Classificação">
+                                            <h:outputText value="#{prat.classificacao}" />
+                                        </p:column>
+
+                                        <p:column headerText="Ações" style="width: 120px; text-align: center;">
+                                            <p:commandButton icon="pi pi-pencil" title="Editar"
+                                                             action="#{prateleiraBean.editar}"
+                                                             update="frmPrateleira" process="@this"
+                                                             styleClass="ui-button-warning ui-button-flat">
+                                                <f:setPropertyActionListener value="#{prat}" target="#{prateleiraBean.prateleiraSelecionada}" />
+                                            </p:commandButton>
+
+                                            <p:commandButton icon="pi pi-trash" title="Excluir"
+                                                             action="#{prateleiraBean.excluir}"
+                                                             update="frmPrateleira" process="@this"
+                                                             styleClass="ui-button-danger ui-button-flat">
+                                                <f:setPropertyActionListener value="#{prat}" target="#{prateleiraBean.prateleiraSelecionada}" />
+                                                <p:confirm header="Confirmar Exclusão" message="Tem a certeza que deseja remover esta prateleira?" icon="pi pi-exclamation-triangle" />
+                                            </p:commandButton>
+                                        </p:column>
+                                    </p:dataTable>
+                                </p:panel>
+                            </div>
+                        </div>
+                    </h:form>
+                </div>
+
+            </ui:define>
+        </ui:composition>
+
+    </body>
+</html>
+
