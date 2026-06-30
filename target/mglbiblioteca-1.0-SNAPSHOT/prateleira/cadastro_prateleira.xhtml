@@ -39,66 +39,15 @@
 
                                         <p:commandButton value="Limpar Novo" action="#{prateleiraBean.limparPesquisa}" 
                                                          update="frmPrateleira" icon="pi pi-refresh" process="@this"
-                                                         styleClass="ui-button-secondary" style="width: 100%;" />
+                                                         styleClass="ui-button-secondary" style="width: 100%" />
                                     </div>
-                                </p:panel>
-                            </div>
-
-                            <div class="ui-g-12 ui-md-8">
-                                <p:panel header="Prateleiras Registadas">
-
-                                    <div class="ui-inputgroup" style="margin-bottom: 15px;">
-                                        <p:inputText placeholder="Pesquisar por Posição/Classificação..." 
-                                                     value="#{prateleiraBean.filtroPosicao}" style="width: 100%;" />
-                                        <p:commandButton icon="pi pi-search" action="#{prateleiraBean.pesquisar}" 
-                                                         update="frmPrateleira:tblPrateleiras frmPrateleira:msgs" title="Pesquisar" />
-                                        <p:commandButton icon="pi pi-times" action="#{prateleiraBean.limparPesquisa}" 
-                                                         update="frmPrateleira" styleClass="ui-button-warning" title="Limpar Filtro" />
-                                    </div>
-
-                                    <p:dataTable id="tblPrateleiras" value="#{prateleiraBean.prateleiras}" var="prat"
-                                                 selectionMode="single" selection="#{prateleiraBean.prateleiraSelecionada}"
-                                                 rowKey="#{prat.idPrateleira}" rows="10" paginator="true"
-                                                 paginatorPosition="bottom" emptyMessage="Nenhuma prateleira localizada.">
-
-                                        <p:column headerText="Codigo de Registo" style="width: 50px; text-align: center;">
-                                            <h:outputText value="#{prat.idPrateleira}" />
-                                        </p:column>
-
-                                        <p:column headerText="Posição">
-                                            <h:outputText value="#{prat.posicaoPrateleira}" />
-                                        </p:column>
-
-                                        <p:column headerText="Classificação">
-                                            <h:outputText value="#{prat.classificacao}" />
-                                        </p:column>
-
-                                        <p:column headerText="Ações" style="width: 120px; text-align: center;">
-                                            <p:commandButton icon="pi pi-pencil" title="Editar"
-                                                             action="#{prateleiraBean.editar}"
-                                                             update="frmPrateleira" process="@this"
-                                                             styleClass="ui-button-warning ui-button-flat">
-                                                <f:setPropertyActionListener value="#{prat}" target="#{prateleiraBean.prateleiraSelecionada}" />
-                                            </p:commandButton>
-
-                                            <p:commandButton icon="pi pi-trash" title="Excluir"
-                                                             action="#{prateleiraBean.excluir}"
-                                                             update="frmPrateleira" process="@this"
-                                                             styleClass="ui-button-danger ui-button-flat">
-                                                <f:setPropertyActionListener value="#{prat}" target="#{prateleiraBean.prateleiraSelecionada}" />
-                                                <p:confirm header="Confirmar Exclusão" message="Tem a certeza que deseja remover esta prateleira?" icon="pi pi-exclamation-triangle" />
-                                            </p:commandButton>
-                                        </p:column>
-                                    </p:dataTable>
                                 </p:panel>
                             </div>
                         </div>
                     </h:form>
                 </div>
-
             </ui:define>
         </ui:composition>
 
     </body>
 </html>
-

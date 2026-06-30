@@ -1,0 +1,80 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="jakarta.faces.facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="jakarta.faces.core"
+      xmlns:h="jakarta.faces.html">
+
+    <body>
+
+        <ui:composition template="./../WEB-INF/templates/template_prateleira.xhtml">
+
+            <ui:define name="content">
+
+                <f:view>
+
+                    <h:form id="formPesquisa">
+                        <p:growl id="growl" showDetail="true" sticky="false" life="4000" />
+
+                        <p:confirmDialog global="true" showEffect="fade" hideEffect="fade" responsive="true">
+                            <p:commandButton value="Sim" type="button" styleClass="ui-confirmdialog-yes" icon="pi pi-check" />
+                            <p:commandButton value="Não" type="button" styleClass="ui-confirmdialog-no" icon="pi pi-times" />
+                        </p:confirmDialog>
+
+                        <div class="ui-g-12 ui-md-8">
+                            <p:panel header="Prateleiras Registadas">
+
+                                <div class="ui-inputgroup" style="margin-bottom: 15px;">
+                                    <p:inputText placeholder="Pesquisar por Posição/Classificação..."
+                                                 value="#{prateleiraBean.filtroPosicao}" style="width: 100%;" />
+                                    <p:commandButton icon="pi pi-search" action="#{prateleiraBean.pesquisar}"
+                                                     update="formPesquisa:tblPrateleiras formPesquisa:growl" title="Pesquisar" />
+                                    <p:commandButton icon="pi pi-times" action="#{prateleiraBean.limparPesquisa}"
+                                                     update="formPesquisa" styleClass="ui-button-warning" title="Limpar Filtro" />
+                                </div>
+
+                                <p:dataTable id="tblPrateleiras" value="#{prateleiraBean.prateleiras}" var="prat"
+                                             selectionMode="single" selection="#{prateleiraBean.prateleiraSelecionada}"
+                                             rowKey="#{prat.idPrateleira}" rows="10" paginator="true"
+                                             paginatorPosition="bottom" emptyMessage="Nenhuma prateleira localizada.">
+
+                                    <p:column headerText="Codigo de Registo" style="width: 50px; text-align: center;">
+                                        <h:outputText value="#{prat.idPrateleira}" />
+                                    </p:column>
+
+                                    <p:column headerText="Posição">
+                                        <h:outputText value="#{prat.posicaoPrateleira}" />
+                                    </p:column>
+
+                                    <p:column headerText="Classificação">
+                                        <h:outputText value="#{prat.classificacao}" />
+                                    </p:column>
+
+                                    <p:column headerText="Ações" style="width: 120px; text-align: center;">
+                                        <p:commandButton icon="pi pi-pencil" title="Editar"
+                                                         action="#{prateleiraBean.editar}"
+                                                         update="formPesquisa" process="@this"
+                                                         styleClass="ui-button-warning ui-button-flat">
+                                            <f:setPropertyActionListener value="#{prat}" target="#{prateleiraBean.prateleiraSelecionada}" />
+                                        </p:commandButton>
+
+                                        <p:commandButton icon="pi pi-trash" title="Excluir"
+                                                         action="#{prateleiraBean.excluir}"
+                                                         update="formPesquisa:tblPrateleiras formPesquisa:growl" process="@this"
+                                                         styleClass="ui-button-danger ui-button-flat">
+                                            <f:setPropertyActionListener value="#{prat}" target="#{prateleiraBean.prateleiraSelecionada}" />
+                                            <p:confirm header="Confirmar Exclusão" message="Tem a certeza que deseja remover esta prateleira?" icon="pi pi-exclamation-triangle" />
+                                        </p:commandButton>
+                                    </p:column>
+                                </p:dataTable>
+                            </p:panel>
+                        </div>
+                    </h:form>
+                </f:view>
+            </ui:define>
+
+        </ui:composition>
+
+    </body>
+</html>
