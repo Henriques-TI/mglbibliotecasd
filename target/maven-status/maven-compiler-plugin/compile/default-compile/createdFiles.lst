@@ -1,6 +1,9 @@
 skylink\mglbiblioteca\DAO\ComputadorDAO.class
 skylink\mglbiblioteca\JakartaRestConfiguration.class
 skylink\mglbiblioteca\model\Prateleira.class
+mglbibliotecasd\dao\EmprestimoDAO.class
+mglbibliotecasd\modelo\Emprestimo.class
+mglbibliotecasd\model\Utilizador.class
 skylink\mglbiblioteca\model\Computador.class
 skylink\mglbiblioteca\model\Livro.class
 skylink\mglbiblioteca\model\Leitura.class
@@ -9,9 +12,11 @@ skylink\mglbiblioteca\DAO\LeituraDAO.class
 skylink\mglbiblioteca\model\Funcionario.class
 skylink\mglbiblioteca\mb\FuncionarioBean.class
 skylink\mglbiblioteca\mb\LivroBean.class
+mglbibliotecasd\dao\UtilizadorDAO.class
 skylink\mglbiblioteca\model\CategoriaLivro.class
 mglbibliotecasd\dao\LivroDAO.class
 skylink\mglbiblioteca\model\CategoriaComputador.class
+mglbibliotecasd\mb\EmprestimoBean.class
 skylink\mglbiblioteca\mb\ComputadorBean.class
 mglbiblioteca\dao\PagamentoDAO.class
 mglbiblioteca\dao\CategoriaLivroDAO.class
@@ -19,6 +24,7 @@ mglbiblioteca\dao\PrateleiraDAO.class
 skylink\mglbiblioteca\mb\CategoriaLivroBean.class
 skylink\mglbiblioteca\mb\LeituraBean.class
 skylink\mglbiblioteca\mb\PagamentoBean.class
+mglbibliotecasd\mb\UtilizadorBean.class
 skylink\mglbiblioteca\DAO\FuncionarioDAO.class
 skylink\mglbiblioteca\model\Pagamento.class
 skylink\mglbiblioteca\mb\PrateleiraBean.class

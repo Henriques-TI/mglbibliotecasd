@@ -1,0 +1,55 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="jakarta.faces.facelets"
+      xmlns:h="jakarta.faces.html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="jakarta.faces.core">
+
+    <body>
+
+        <ui:composition template="./../WEB-INF/templates/template_gestao_tabelas.xhtml">
+
+            <ui:define name="top">
+                <title>mglbiblioteca - Lista de Empréstimos Ativos</title>
+            </ui:define>
+
+            <ui:define name="content">
+                <h:form id="formTabelaEmprestimos">
+                    <p:growl id="mensagensTabela" showDetail="true" life="3000" />
+
+                    <p:panel header="Grelha de Empréstimos Ativos" style="margin: 20px;">
+
+                        <p:dataTable id="tabelaEmprestimos" value="#{emprestimoBean.listaEmprestimos}" var="emp" 
+                                     paginator="true" rows="10" paginatorPosition="bottom"
+                                     emptyMessage="Nenhum empréstimo ativo pendente encontrado.">
+
+                            <p:column headerText="Nome do Utilizador" sortBy="#{emp.idUtilizador}">
+                                <h:outputText value="#{emp.idUtilizador}" />
+                            </p:column>
+
+                            <p:column headerText="Título do Livro" sortBy="#{emp.livro}">
+                                <h:outputText value="#{emp.livro}" />
+                            </p:column>
+
+                            <p:column headerText="Data de Retirada" style="width: 180px; text-align: center;">
+                                <h:outputText value="#{emp.dataRetirada}">
+                                    <f:convertDateTime pattern="dd/MM/yyyy HH:mm:ss" timeZone="GMT+1" />
+                                </h:outputText>
+                            </p:column>
+
+                            <p:column headerText="Devolução Prevista" style="width: 150px; text-align: center;">
+                                <h:outputText value="#{emp.dataDevolucaoPrevista}">
+                                    <f:convertDateTime pattern="dd/MM/yyyy" timeZone="GMT+1" />
+                                </h:outputText>
+                            </p:column>
+
+                        </p:dataTable>
+                    </p:panel>
+                </h:form>
+            </ui:define>
+
+        </ui:composition>
+
+    </body>
+</html>

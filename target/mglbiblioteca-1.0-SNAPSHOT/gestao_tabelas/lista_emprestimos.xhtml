@@ -1,0 +1,77 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="jakarta.faces.facelets"
+      xmlns:h="jakarta.faces.html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="jakarta.faces.core">
+
+    <body>
+
+        <ui:composition template="./../WEB-INF/templates/template_gestao_tabelas.xhtml">
+
+            <ui:define name="top">
+                Histórico de Empréstimos
+            </ui:define>
+
+
+            <ui:define name="content">
+
+        <h:form id="formTabelaEmprestimos">
+            <p:growl id="mensagensTabela" showDetail="true" life="3000" />
+
+            <p:panel header="Grelha Geral de Empréstimos Registados" styleClass="painel-customizado">
+                
+                <p:toolbar style="margin-bottom: 20px;">
+                    <p:toolbarGroup>
+                        <p:button value="Novo Empréstimo" outcome="cadastro_emprestimo" icon="pi pi-plus" styleClass="ui-button-success" />
+                    </p:toolbarGroup>
+
+                    <p:toolbarGroup align="right">
+                        <p:inputNumber placeholder="ID Utilizador..." value="#{emprestimoBean.filtroIdUtilizador}" decimalPlaces="0" thousandSeparator="" style="margin-right: .5rem;"/>
+                        <p:commandButton value="Filtrar" action="#{emprestimoBean.pesquisar}" update="tabelaEmprestimos" icon="pi pi-search" styleClass="ui-button-info" style="margin-right: .5rem;"/>
+                        <p:commandButton value="Limpar" action="#{emprestimoBean.limparPesquisa}" update="formTabelaEmprestimos" icon="pi pi-refresh" styleClass="ui-button-flat"/>
+                    </p:toolbarGroup>
+                </p:toolbar>
+
+                <p:dataTable id="tabelaEmprestimos" value="#{emprestimoBean.listaEmprestimos}" var="emp" 
+                             paginator="true" rows="10" paginatorPosition="bottom"
+                             emptyMessage="Nenhum registo de empréstimo encontrado.">
+
+                    <p:column headerText="ID Empréstimo" style="width: 80px; text-align: center;">
+                        <h:outputText value="#{emp.idEmprestimo}" />
+                    </p:column>
+
+                    <p:column headerText="ID Livro (FK)" style="text-align: center; width: 100px;">
+                        <h:outputText value="#{emp.livro.idLivro}" />
+                    </p:column>
+
+                    <p:column headerText="Codigo do Utilizador" sortBy="#{emp.idUtilizador}">
+                        <h:outputText value="#{emp.idUtilizador}" />
+                    </p:column>
+
+                    <p:column headerText="Data de Retirada">
+                        <h:outputText value="#{emp.dataRetirada}">
+                            <f:convertDateTime pattern="dd/MM/yyyy HH:mm" timeZone="GMT+1" />
+                        </h:outputText>
+                    </p:column>
+
+                    <p:column headerText="Devolução Prevista">
+                        <h:outputText value="#{emp.dataDevolucaoPrevista}">
+                            <f:convertDateTime pattern="dd/MM/yyyy" timeZone="GMT+1" />
+                        </h:outputText>
+                    </p:column>
+
+                    <p:column headerText="Estado/Status" style="width: 120px; text-align: center;">
+                        <h:outputText value="#{emp.status}" styleClass="customer-badge status-#{emp.status.toLowerCase()}" />
+                    </p:column>
+
+                </p:dataTable>
+            </p:panel>
+        </h:form>
+               </ui:define>
+
+        </ui:composition>
+
+    </body>
+</html>

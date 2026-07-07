@@ -72,8 +72,8 @@ public class FuncionarioBean implements Serializable {
 
         if (sucesso) {
             addMensagem(FacesMessage.SEVERITY_INFO, "Sucesso", "Funcionário guardado com sucesso!");
-            this.funcionario = new Funcionario(); // Reseta formulário
-            carregarFuncionarios(); // Atualiza a tabela
+            this.funcionario = new Funcionario();
+            carregarFuncionarios(); 
         } else {
             addMensagem(FacesMessage.SEVERITY_ERROR, "Erro", "Não foi possível guardar os dados.");
         }

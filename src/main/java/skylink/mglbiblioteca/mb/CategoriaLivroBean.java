@@ -29,12 +29,10 @@ public class CategoriaLivroBean implements Serializable {
     private List<CategoriaLivro> categorias = new ArrayList<>();
     private String filtroDescricao;
 
-    // Construtor padrão que inicializa o objeto do formulário de categorias
     public CategoriaLivroBean() {
         this.categoriaLivro = new CategoriaLivro();
     }
 
-    // Executado automaticamente ao carregar a view associada
     @PostConstruct
     public void inicializar() {
         try {
@@ -44,12 +42,10 @@ public class CategoriaLivroBean implements Serializable {
         }
     }
 
-    // Alimenta a lista que agora puxará os dados corretamente com a coluna corrigida no DAO
     public void carregarCategorias() {
         categorias = categoriaLivroDAO.findAll();
     }
 
-    // Executa a busca baseada no campo de texto de filtro
     public void pesquisar() {
         if (filtroDescricao != null && !filtroDescricao.trim().isEmpty()) {
             categorias = categoriaLivroDAO.buscarPorDescricao(filtroDescricao.trim());
@@ -62,7 +58,6 @@ public class CategoriaLivroBean implements Serializable {
         }
     }
 
-    // Reseta filtros e seleções da tabela de categorias
     public void limparPesquisa() {
         this.filtroDescricao = null;
         this.categoriaLivro = new CategoriaLivro();
@@ -70,7 +65,6 @@ public class CategoriaLivroBean implements Serializable {
         this.categoriaSelecionada = null;
     }
 
-    // Insere ou atualiza o registo de categoria na base de dados
     public void salvar() {
         if (categoriaLivro == null) return;
 
@@ -90,7 +84,6 @@ public class CategoriaLivroBean implements Serializable {
         }
     }
 
-    // Remove a categoria, validando possíveis restrições de chaves estrangeiras
     public void excluir() {
         if (categoriaSelecionada == null) {
             addMensagem(FacesMessage.SEVERITY_WARN, "Aviso", "Selecione uma categoria na tabela.");
@@ -107,7 +100,6 @@ public class CategoriaLivroBean implements Serializable {
         }
     }
 
-    // Prepara a categoria selecionada para edição no formulário
     public String editar() {
         if (categoriaSelecionada == null) {
             addMensagem(FacesMessage.SEVERITY_WARN, "Aviso", "Selecione uma categoria para editar.");
@@ -117,12 +109,10 @@ public class CategoriaLivroBean implements Serializable {
         return "/categoria/cadastro_categoria?faces-redirect=true";
     }
 
-    // Auxiliar de mensagens contextualizadas na interface web
     public void addMensagem(FacesMessage.Severity severidade, String resumo, String detalhe) {
         FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(severidade, resumo, detalhe));
     }
 
-    // --- Getters e Setters para Mapeamento JSF Expression Language (`#{...}`) ---
 
     public CategoriaLivro getCategoriaLivro() {
         return categoriaLivro;

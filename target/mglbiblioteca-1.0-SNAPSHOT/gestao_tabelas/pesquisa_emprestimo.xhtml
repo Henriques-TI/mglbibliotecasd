@@ -1,0 +1,55 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="jakarta.faces.facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:h="jakarta.faces.html"
+      xmlns:f="jakarta.faces.core">
+
+    <body>
+
+        <ui:composition template="./../WEB-INF/templates/template_gestao_tabelas.xhtml">
+
+            <ui:define name="top">
+                    <title>mglbiblioteca - Filtro de Empréstimos Ativos</title>
+            </ui:define>
+
+
+
+            <ui:define name="content">
+                
+                    <h:form id="formFiltro">
+                        <p:growl id="mensagensFiltro" showDetail="true" life="4000" />
+
+                        <p:panel header="Consultar Empréstimos Ativos (Filtros)" style="max-width: 800px; margin: 30px auto;">
+
+                            <h:panelGrid columns="3" cellpadding="5" style="width: 100%;">
+
+                                <p:outputLabel value="Descrição / Nome do Cliente:" for="txtDescricao" style="font-weight: bold;" />
+                                <p:inputText id="txtDescricao" value="#{emprestimoAtivoBean.filtroDescricao}" 
+                                             placeholder="Digite o nome para pesquisar..." style="width: 100%;" />
+
+                                <h:panelGroup>
+                                    <p:commandButton value="Pesquisar" action="#{emprestimoAtivoBean.pesquisar}" 
+                                                     icon="pi pi-search" styleClass="ui-button-info" style="margin-right: .5rem;" />
+
+                                    <p:commandButton value="Limpar" action="#{emprestimoAtivoBean.limparPesquisa}" 
+                                                     icon="pi pi-refresh" styleClass="ui-button-flat" update="txtDescricao" />
+                                </h:panelGroup>
+
+                            </h:panelGrid>
+
+                            <f:facet name="footer">
+                                <p:button value="Ir para a Grelha de Resultados" outcome="lista_emprestimos" 
+                                          icon="pi pi-table" styleClass="ui-button-secondary" />
+                            </f:facet>
+
+                        </p:panel>
+                    </h:form>
+               
+            </ui:define>
+
+        </ui:composition>
+
+    </body>
+</html>

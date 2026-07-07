@@ -10,10 +10,10 @@
         <h:outputStylesheet name="estilo.css" library="css"/>
         <title>Gestão da Biblioteca</title>
     </h:head>
-    
+
     <h:body>
         <div class="container">
-            
+
             <header class="header">
                 <ui:insert name="top">
                     <h1>📚 Gestão da Biblioteca</h1>
@@ -21,21 +21,30 @@
                 </ui:insert>
             </header>
 
-            <!-- MENU LATERAL -->
             <nav class="nav">
                 <ui:insert name="left">
                     <h3>Menu Principal</h3>
                     <ul>
                         <li><h:link value="🏠 Voltar ao Início" outcome="/index" /></li>
+
+                        <li><h:link value="📖 Gestão de Funcionarios" outcome="/funcionario/index_funcionario"/></li>
+
+
                         <li><h:link value="💻 Gestão de Computadores" outcome="/computador/index_computador"/></li>
+
                         <li><h:link value="🤝 Gestão de Empréstimos" outcome="/leitura/index_leitura"/></li>
+
                         <li><h:link value="📖 Gestão de Livros" outcome="/livro/index_livro"/></li>
+
+                        <li><h:link value="📖 Gestão de Tabelas" outcome="/gestao_tabelas/index_gestao_tabelas"/></li>
+
                         <li><h:link value="🗄️ Gestão das Prateleiras" outcome="/prateleira/index_prateleira"/></li>
+
                         <li><h:link value="🏷️ Gestão das Categorias" outcome="/categoria/index_categoria"/></li>
                     </ul>
                 </ui:insert>
             </nav>
-            
+
             <main class="main">
                 <ui:insert name="content">
                     <div class="welcome-container">
@@ -51,7 +60,7 @@
                     <p>📧 contato@exemplo.com | 📱 (244) 99999-9999</p>
                 </ui:insert>
             </footer>
-            
+
         </div>
     </h:body>
 </html>

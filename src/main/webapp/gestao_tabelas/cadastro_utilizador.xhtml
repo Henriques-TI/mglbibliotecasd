@@ -1,0 +1,66 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="jakarta.faces.facelets"
+      xmlns:h="jakarta.faces.html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="jakarta.faces.core">
+
+    <body>
+
+        <ui:composition template="./../WEB-INF/templates/template_gestao_tabelas.xhtml">
+
+            <ui:define name="content">
+                <h:form id="formCadastroUtilizador">
+                    <p:growl id="msges" showDetail="true" life="4000" />
+
+                    <p:panel header="Registar Novo Utilizador / Cliente" style="max-width: 600px; margin: 20px auto;">
+                        
+                        <h:panelGrid columns="2" cellpadding="5" style="width: 100%;">
+                            
+                            <p:outputLabel value="Nome Completo:" for="nome" />
+                            <p:inputText id="nome" value="#{utilizadorBean.utilizador.nome}" 
+                                         required="true" requiredMessage="O nome é obrigatório."
+                                         style="width: 100%;" maxlength="150" />
+
+                            <p:outputLabel value="Documento de Identificação (BI):" for="bi" />
+                            <p:inputText id="bi" value="#{utilizadorBean.utilizador.bi}" 
+                                         style="width: 100%;" maxlength="50" />
+
+                            <p:outputLabel value="E-mail:" for="email" />
+                            <p:inputText id="email" value="#{utilizadorBean.utilizador.email}" 
+                                         style="width: 100%;" maxlength="100" 
+                                         validatorMessage="Formato de e-mail inválido.">
+                                <f:validateRegex pattern="^[_A-Za-z0-9-\+]+(\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+(\.[A-Za-z0-9]+)*(\.[A-Za-z]{2,})$" />
+                            </p:inputText>
+
+                            <p:outputLabel value="Telefone:" for="telefone" />
+                            <p:inputMask id="telefone" value="#{utilizadorBean.utilizador.telefone}" 
+                                         mask="(+244) 999 999 999" validateMask="false"
+                                         style="width: 100%;" />
+
+                        </h:panelGrid>
+
+                        <f:facet name="footer">
+                            <p:commandButton value="Salvar Utilizador" 
+                                             action="#{utilizadorBean.salvar}" 
+                                             update="formCadastroUtilizador" 
+                                             icon="pi pi-save" 
+                                             styleClass="ui-button-success" 
+                                             style="margin-right: .5rem;" />
+                                             
+                            <p:commandButton value="Limpar" 
+                                             action="#{utilizadorBean.limparFormulario}" 
+                                             update="formCadastroUtilizador" 
+                                             process="@this"
+                                             icon="pi pi-times" 
+                                             styleClass="ui-button-secondary" />
+                        </f:facet>
+                    </p:panel>
+                </h:form>
+            </ui:define>
+
+        </ui:composition>
+
+    </body>
+</html>

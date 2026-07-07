@@ -19,7 +19,7 @@
                             <p:toolbarGroup align="left">
 
                                 <p:inputText id="pesquisa"
-                                             value="#{livroBean.filtroTitulo}"
+                                             value="#{livroBean.filtroAutor}"
                                              placeholder="Pesquisar por título ou autor..."
                                              style="width: 400px;" />
 
@@ -62,15 +62,15 @@
                                 <h:outputText value="#{liv.idLivro}" />
                             </p:column>
 
-                            <p:column headerText="Título do Livro">
+                            <p:column headerText="Título do Livro"width="80"/>
                                 <h:outputText value="#{liv.titulo}" />
                             </p:column>
 
-                            <p:column headerText="Autor" width="180">
+                            <p:column headerText="Autor" width="120">
                                 <h:outputText value="#{liv.autor}" />
                             </p:column>
 
-                            <p:column headerText="Editora" width="140">
+                            <p:column headerText="Editora" width="80">
                                 <h:outputText value="#{liv.editora}" />
                             </p:column>
 
@@ -82,11 +82,11 @@
                                 <h:outputText value="#{liv.prateleira.classificacao}" />
                             </p:column>
 
-                            <p:column headerText="Qtd" width="60" style="text-align:center;">
+                            <p:column headerText="Qtd" width="180" style="text-align:center;">
                                 <h:outputText value="#{liv.quantidadeDisponivel}" />
                             </p:column>
 
-                            <p:column headerText="Operações" width="200" style="text-align:center;">
+                            <p:column headerText="Operações" width="150" style="text-align:center;">
                                 <p:commandButton value="Editar"
                                                  action="#{livroBean.editar}"
                                                  styleClass="ui-button-warning"
