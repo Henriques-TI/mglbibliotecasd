@@ -1,10 +1,7 @@
-
 package skylink.mglbiblioteca.model;
 
 import java.io.Serializable;
 import java.util.Objects;
-import skylink.mglbiblioteca.model.Prateleira;
-import skylink.mglbiblioteca.model.CategoriaLivro;
 
 /**
  * @Henriques
@@ -18,8 +15,8 @@ public class Livro implements Serializable {
     private String autor;
     private String editora;
     private Integer anoPublicacao;
-    private CategoriaLivro categoriaLivro;
-    private Prateleira prateleira;   
+    private CategoriaLivro categoriaLivro; 
+    private Prateleira prateleira;       
     private Integer quantidadeDisponivel;
 
     public Livro() {
@@ -37,7 +34,6 @@ public class Livro implements Serializable {
         this.prateleira = prateleira;
         this.quantidadeDisponivel = quantidadeDisponivel;
     }
-
 
     public Integer getIdLivro() {
         return idLivro;
@@ -112,18 +108,9 @@ public class Livro implements Serializable {
 
     @Override
     public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (obj == null || getClass() != obj.getClass()) {
-            return false;
-        }
+        if (this == obj) return true;
+        if (obj == null || getClass() != obj.getClass()) return false;
         final Livro other = (Livro) obj;
         return Objects.equals(this.idLivro, other.idLivro);
-    }
-
-    @Override
-    public String toString() {
-        return "Livro{" + "idLivro=" + idLivro + ", titulo=" + titulo + ", autor=" + autor + '}';
     }
 }

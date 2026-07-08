@@ -13,14 +13,11 @@ public class Leitura implements Serializable {
 
     private Integer idLeitura;
     private Integer idUtilizador; 
-    private Integer idLivro;      
+    private Integer idLivro; 
     private Date dataRetirada;
     private Date dataDevolucaoPrevista;
     private Date dataDevolucaoReal;
-    private String status;
-
-   
-
+    private String status; 
     public Leitura() {
     }
 
@@ -80,9 +77,6 @@ public class Leitura implements Serializable {
         this.status = status;
     }
 
-   
-   
-
     @Override
     public int hashCode() {
         int hash = 3;
@@ -97,10 +91,4 @@ public class Leitura implements Serializable {
         final Leitura other = (Leitura) obj;
         return Objects.equals(this.idLeitura, other.idLeitura);
     }
-
-    @Override
-    public String toString() {
-        return "Leitura{" + "idLeitura=" + idLeitura + ", idUtilizador=" + idUtilizador + ", idLivro=" + idLivro + ", dataRetirada=" + dataRetirada + ", dataDevolucaoPrevista=" + dataDevolucaoPrevista + ", dataDevolucaoReal=" + dataDevolucaoReal + ", status=" + status + '}';
-    }
-    
 }

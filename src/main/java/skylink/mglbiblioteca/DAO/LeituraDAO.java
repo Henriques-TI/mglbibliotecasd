@@ -1,4 +1,4 @@
-package skylink.mglbiblioteca.dao;
+package skylink.mglbiblioteca.DAO;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;

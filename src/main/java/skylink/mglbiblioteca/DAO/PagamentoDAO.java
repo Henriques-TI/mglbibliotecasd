@@ -1,4 +1,4 @@
-package mglbiblioteca.dao;
+package skylink.mglbiblioteca.DAO;
 
 import java.io.Serializable;
 import java.sql.Connection;
@@ -11,7 +11,6 @@ import java.util.Date;
 import java.util.List;
 import skylink.mglbiblioteca.model.MetodoPagamento;
 import skylink.mglbiblioteca.model.Pagamento;
-import skylink.mglbiblioteca.model.TipoOrigem;
 import skylink.mglbiblioteca.bdutil.ConnectionDB;
 
 /**
@@ -31,7 +30,6 @@ public class PagamentoDAO implements Serializable {
         try (Connection conn = ConnectionDB.getConnection();
              PreparedStatement ps = conn.prepareStatement(INSERT)) {
             
-            ps.setString(1, p.getTipoOrigem() != null ? p.getTipoOrigem().name() : null);
             ps.setObject(2, p.getIdReferencia());
             ps.setObject(3, p.getIdUtilizador());
             ps.setBigDecimal(4, p.getValorPago());
@@ -53,7 +51,6 @@ public class PagamentoDAO implements Serializable {
         try (Connection conn = ConnectionDB.getConnection();
              PreparedStatement ps = conn.prepareStatement(UPDATE)) {
             
-            ps.setString(1, p.getTipoOrigem() != null ? p.getTipoOrigem().name() : null);
             ps.setObject(2, p.getIdReferencia());
             ps.setObject(3, p.getIdUtilizador());
             ps.setBigDecimal(4, p.getValorPago());
@@ -118,8 +115,6 @@ public class PagamentoDAO implements Serializable {
         Pagamento p = new Pagamento();
         p.setIdPagamento(rs.getInt("id_pagamento"));
         
-        String origemStr = rs.getString("tipo_origem");
-        if (origemStr != null) p.setTipoOrigem(TipoOrigem.valueOf(origemStr));
         
         p.setIdReferencia(rs.getInt("id_referencia"));
         p.setIdUtilizador(rs.getInt("id_utilizador"));

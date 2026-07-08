@@ -12,7 +12,7 @@ public class Computador implements Serializable {
 
     private Integer idEquipamento;
     private String refEquipamento;
-    private String status;
+    private String status; // Mapeia o ENUM ('Disponível', 'Em Uso', 'Manutenção')
     private String localizacao;
 
     public Computador() {
@@ -61,38 +61,14 @@ public class Computador implements Serializable {
     public int hashCode() {
         int hash = 7;
         hash = 97 * hash + Objects.hashCode(this.idEquipamento);
-        hash = 97 * hash + Objects.hashCode(this.refEquipamento);
-        hash = 97 * hash + Objects.hashCode(this.status);
-        hash = 97 * hash + Objects.hashCode(this.localizacao);
         return hash;
     }
 
     @Override
     public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (obj == null) {
-            return false;
-        }
-        if (getClass() != obj.getClass()) {
-            return false;
-        }
+        if (this == obj) return true;
+        if (obj == null || getClass() != obj.getClass()) return false;
         final Computador other = (Computador) obj;
-        if (!Objects.equals(this.refEquipamento, other.refEquipamento)) {
-            return false;
-        }
-        if (!Objects.equals(this.status, other.status)) {
-            return false;
-        }
-        if (!Objects.equals(this.localizacao, other.localizacao)) {
-            return false;
-        }
         return Objects.equals(this.idEquipamento, other.idEquipamento);
-    }
-
-    @Override
-    public String toString() {
-        return String.format("%s[idEquipamento=%d]", getClass().getSimpleName(), getIdEquipamento());
     }
 }

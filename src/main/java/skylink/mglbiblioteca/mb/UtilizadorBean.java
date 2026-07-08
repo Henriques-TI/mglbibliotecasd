@@ -1,4 +1,4 @@
-package mglbibliotecasd.mb;
+package skylink.mglbiblioteca.mb;
 
 import jakarta.annotation.PostConstruct;
 import jakarta.faces.application.FacesMessage;
@@ -7,8 +7,8 @@ import jakarta.faces.view.ViewScoped;
 import jakarta.inject.Named;
 import java.io.Serializable;
 import java.util.List;
-import mglbibliotecasd.dao.UtilizadorDAO;
-import mglbibliotecasd.model.Utilizador;
+import skylink.mglbiblioteca.DAO.UtilizadorDAO;
+import skylink.mglbiblioteca.model.Utilizador;
 
 @Named(value = "utilizadorBean")
 @ViewScoped

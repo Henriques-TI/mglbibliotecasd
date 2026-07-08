@@ -9,7 +9,7 @@ import jakarta.inject.Named;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-import mglbiblioteca.dao.CategoriaLivroDAO;
+import skylink.mglbiblioteca.DAO.CategoriaLivroDAO;
 import skylink.mglbiblioteca.model.CategoriaLivro;
 
 /**
@@ -43,60 +43,47 @@ public class CategoriaLivroBean implements Serializable {
     }
 
     public void carregarCategorias() {
-        categorias = categoriaLivroDAO.findAll();
-    }
-
-    public void pesquisar() {
         if (filtroDescricao != null && !filtroDescricao.trim().isEmpty()) {
-            categorias = categoriaLivroDAO.buscarPorDescricao(filtroDescricao.trim());
-            if (categorias.isEmpty()) {
-                addMensagem(FacesMessage.SEVERITY_INFO, "Informação", "Nenhuma categoria encontrada com esta descrição.");
-            }
+            this.categorias = categoriaLivroDAO.buscarPorDescricao(filtroDescricao);
         } else {
-            addMensagem(FacesMessage.SEVERITY_WARN, "Atenção", "Informe uma descrição para pesquisar.");
-            carregarCategorias();
+            this.categorias = categoriaLivroDAO.findAll();
         }
-    }
-
-    public void limparPesquisa() {
-        this.filtroDescricao = null;
-        this.categoriaLivro = new CategoriaLivro();
-        carregarCategorias();
-        this.categoriaSelecionada = null;
     }
 
     public void salvar() {
-        if (categoriaLivro == null) return;
-
         boolean sucesso;
         if (categoriaLivro.getIdCategoriaLivro() == null) {
             sucesso = categoriaLivroDAO.save(categoriaLivro);
+            if (sucesso) {
+                addMensagem(FacesMessage.SEVERITY_INFO, "Sucesso", "Categoria cadastrada com sucesso!");
+            }
         } else {
             sucesso = categoriaLivroDAO.update(categoriaLivro);
+            if (sucesso) {
+                addMensagem(FacesMessage.SEVERITY_INFO, "Sucesso", "Categoria atualizada com sucesso!");
+            }
         }
 
         if (sucesso) {
-            addMensagem(FacesMessage.SEVERITY_INFO, "Sucesso", "Categoria guardada com sucesso!");
-            this.categoriaLivro = new CategoriaLivro();
+            limpar();
             carregarCategorias();
         } else {
-            addMensagem(FacesMessage.SEVERITY_ERROR, "Erro", "Erro ao processar operação na base de dados.");
+            addMensagem(FacesMessage.SEVERITY_ERROR, "Erro", "Não foi possível salvar a categoria.");
         }
     }
 
     public void excluir() {
         if (categoriaSelecionada == null) {
-            addMensagem(FacesMessage.SEVERITY_WARN, "Aviso", "Selecione uma categoria na tabela.");
+            addMensagem(FacesMessage.SEVERITY_WARN, "Aviso", "Selecione uma categoria para excluir.");
             return;
         }
 
-        if (categoriaLivroDAO.delete(categoriaSelecionada)) {
-            addMensagem(FacesMessage.SEVERITY_INFO, "Sucesso", "Categoria removida com sucesso.");
-            categorias.remove(categoriaSelecionada);
+        if (categoriaLivroDAO.delete(categoriaSelecionada.getIdCategoriaLivro())) {
+            addMensagem(FacesMessage.SEVERITY_INFO, "Sucesso", "Categoria excluída com sucesso!");
+            carregarCategorias();
             this.categoriaSelecionada = null;
-            this.categoriaLivro = new CategoriaLivro();
         } else {
-            addMensagem(FacesMessage.SEVERITY_ERROR, "Erro", "Não foi possível excluir a categoria. Verifique se existem livros vinculados a ela.");
+            addMensagem(FacesMessage.SEVERITY_ERROR, "Erro", "Erro ao excluir categoria. Verifique se existem livros vinculados a ela.");
         }
     }
 
@@ -109,10 +96,13 @@ public class CategoriaLivroBean implements Serializable {
         return "/categoria/cadastro_categoria?faces-redirect=true";
     }
 
+    public void limpar() {
+        this.categoriaLivro = new CategoriaLivro();
+    }
+
     public void addMensagem(FacesMessage.Severity severidade, String resumo, String detalhe) {
         FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(severidade, resumo, detalhe));
     }
-
 
     public CategoriaLivro getCategoriaLivro() {
         return categoriaLivro;

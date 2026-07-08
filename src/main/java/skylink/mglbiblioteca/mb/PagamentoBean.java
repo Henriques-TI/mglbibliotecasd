@@ -9,10 +9,9 @@ import jakarta.inject.Named;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-import mglbiblioteca.dao.PagamentoDAO;
+import skylink.mglbiblioteca.DAO.PagamentoDAO;
 import skylink.mglbiblioteca.model.MetodoPagamento;
 import skylink.mglbiblioteca.model.Pagamento;
-import skylink.mglbiblioteca.model.TipoOrigem;
 
 
 /**
@@ -78,10 +77,7 @@ public class PagamentoBean implements Serializable {
         }
     }
 
-    public TipoOrigem[] getTiposOrigem() {
-        return TipoOrigem.values();
-    }
-
+  
     public MetodoPagamento[] getMetodosPagamento() {
         return MetodoPagamento.values();
     }

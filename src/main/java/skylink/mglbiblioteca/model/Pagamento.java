@@ -13,7 +13,6 @@ public class Pagamento implements Serializable {
     private static final long serialVersionUID = 1L;
 
     private Integer idPagamento;
-    private TipoOrigem tipoOrigem;         
     private Integer idReferencia;          
     private Integer idUtilizador;          
     private BigDecimal valorPago;
@@ -24,9 +23,8 @@ public class Pagamento implements Serializable {
         this.dataPagamento = new Date(); 
     }
 
-    public Pagamento(Integer idPagamento, TipoOrigem tipoOrigem, Integer idReferencia, Integer idUtilizador, BigDecimal valorPago, MetodoPagamento metodoPagamento, Date dataPagamento) {
+    public Pagamento(Integer idPagamento,Integer idReferencia, Integer idUtilizador, BigDecimal valorPago, MetodoPagamento metodoPagamento, Date dataPagamento) {
         this.idPagamento = idPagamento;
-        this.tipoOrigem = tipoOrigem;
         this.idReferencia = idReferencia;
         this.idUtilizador = idUtilizador;
         this.valorPago = valorPago;
@@ -43,14 +41,7 @@ public class Pagamento implements Serializable {
         this.idPagamento = idPagamento;
     }
 
-    public TipoOrigem getTipoOrigem() {
-        return tipoOrigem;
-    }
-
-    public void setTipoOrigem(TipoOrigem tipoOrigem) {
-        this.tipoOrigem = tipoOrigem;
-    }
-
+   
     public Integer getIdReferencia() {
         return idReferencia;
     }

@@ -9,8 +9,8 @@ import java.io.Serializable;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import skylink.mglbiblioteca.DAO.LeituraDAO;
 import skylink.mglbiblioteca.model.Leitura;
-import skylink.mglbiblioteca.dao.LeituraDAO;
 
 /**
  * @author Henriques

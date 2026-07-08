@@ -1,6 +1,8 @@
 package skylink.mglbiblioteca.mb;
 
 import jakarta.annotation.PostConstruct;
+import jakarta.faces.application.FacesMessage;
+import jakarta.faces.context.FacesContext;
 import jakarta.faces.view.ViewScoped;
 import jakarta.inject.Inject; 
 import jakarta.inject.Named;
@@ -32,6 +34,7 @@ public class ComputadorBean implements Serializable {
         this.computador = new Computador();
         this.listaComputadores = new ArrayList<>();
         this.computador.setStatus("Disponível"); 
+        recarregarLista();
     }
 
     public String save() {
@@ -39,33 +42,37 @@ public class ComputadorBean implements Serializable {
         
         if (computador.getIdEquipamento() == null) {
             sucesso = computadorDAO.save(computador);
+            if (sucesso) addMensagem(FacesMessage.SEVERITY_INFO, "Sucesso", "Computador cadastrado com sucesso!");
         } else {
             sucesso = computadorDAO.update(computador);
+            if (sucesso) addMensagem(FacesMessage.SEVERITY_INFO, "Sucesso", "Computador atualizado com sucesso!");
         }
 
         if (sucesso) {
             limpar();
             recarregarLista();
+            return "/computador/lista_computadores?faces-redirect=true";
+        } else {
+            addMensagem(FacesMessage.SEVERITY_ERROR, "Erro", "Erro ao salvar as informações do computador.");
+            return null;
         }
-        return null; 
     }
 
-    public void editar(Computador c) {
-        this.computador = c;
-    }
-
-    public void delete(int idEquipamento) {
-        if (computadorDAO.delete(idEquipamento)) {
+    public void excluir(Computador c) {
+        if (computadorDAO.delete(c.getIdEquipamento())) {
+            addMensagem(FacesMessage.SEVERITY_INFO, "Sucesso", "Computador removido com sucesso!");
             recarregarLista();
-            if (computador.getIdEquipamento() != null && computador.getIdEquipamento() == idEquipamento) {
-                limpar();
-            }
+        } else {
+            addMensagem(FacesMessage.SEVERITY_ERROR, "Erro", "Não foi possível remover o computador selecionado.");
         }
     }
 
     public void alterarStatus(Computador c, String novoStatus) {
         if (computadorDAO.updateStatus(novoStatus, c.getIdEquipamento())) {
+            addMensagem(FacesMessage.SEVERITY_INFO, "Status Atualizado", "O status do equipamento foi alterado.");
             recarregarLista();
+        } else {
+            addMensagem(FacesMessage.SEVERITY_ERROR, "Erro", "Falha ao alterar o status do equipamento.");
         }
     }
 
@@ -83,7 +90,15 @@ public class ComputadorBean implements Serializable {
     }
 
     private void recarregarLista() {
-        this.listaComputadores = null;
+        if (filtroStatus != null && !filtroStatus.isEmpty()) {
+            this.listaComputadores = computadorDAO.listarPorStatus(filtroStatus);
+        } else {
+            this.listaComputadores = computadorDAO.listarTudo();
+        }
+    }
+
+    public void addMensagem(FacesMessage.Severity severidade, String resumo, String detalhe) {
+        FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(severidade, resumo, detalhe));
     }
 
     public Computador getComputador() {
@@ -95,13 +110,6 @@ public class ComputadorBean implements Serializable {
     }
 
     public List<Computador> getListaComputadores() {
-        if (listaComputadores == null || listaComputadores.isEmpty()) {
-            if (filtroStatus != null && !filtroStatus.isEmpty()) {
-                listaComputadores = computadorDAO.listarPorStatus(filtroStatus);
-            } else {
-                listaComputadores = computadorDAO.listarTudo();
-            }
-        }
         return listaComputadores;
     }
 

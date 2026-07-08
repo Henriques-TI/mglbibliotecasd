@@ -1,4 +1,4 @@
-package mglbiblioteca.dao;
+package skylink.mglbiblioteca.DAO;
 
 import java.io.Serializable;
 import java.sql.Connection;
@@ -17,18 +17,18 @@ public class CategoriaLivroDAO implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    private static final String INSERT = "INSERT INTO categorias_livros (descricao_categorias_livros) VALUES (?)";
-    private static final String UPDATE = "UPDATE categorias_livros SET descricao_categorias_livros = ? WHERE id_categoria_livro = ?";
-    private static final String DELETE = "DELETE FROM categorias_livros WHERE id_categoria_livro = ?";
-    private static final String SELECT_ALL = "SELECT * FROM categorias_livros";
-    private static final String SELECT_BY_ID = "SELECT * FROM categorias_livros WHERE id_categoria_livro = ?";
-    private static final String SELECT_BY_DESCRICAO = "SELECT * FROM categorias_livros WHERE descricao_categorias_livros LIKE ?";
+    private static final String INSERT = "INSERT INTO categoria_livro (descricao) VALUES (?)";
+    private static final String UPDATE = "UPDATE categoria_livro SET descricao = ? WHERE id_categoria_livro = ?";
+    private static final String DELETE = "DELETE FROM categoria_livro WHERE id_categoria_livro = ?";
+    private static final String SELECT_ALL = "SELECT * FROM categoria_livro";
+    private static final String SELECT_BY_ID = "SELECT * FROM categoria_livro WHERE id_categoria_livro = ?";
+    private static final String SELECT_BY_DESCRICAO = "SELECT * FROM categoria_livro WHERE descricao LIKE ?";
 
     public boolean save(CategoriaLivro c) {
         try (Connection conn = ConnectionDB.getConnection();
              PreparedStatement ps = conn.prepareStatement(INSERT)) {
             
-            ps.setString(1, c.getDescricaoCategoriaLivro());
+            ps.setString(1, c.getDescricao());
             return ps.executeUpdate() > 0;
         } catch (SQLException e) {
             e.printStackTrace();
@@ -40,7 +40,7 @@ public class CategoriaLivroDAO implements Serializable {
         try (Connection conn = ConnectionDB.getConnection();
              PreparedStatement ps = conn.prepareStatement(UPDATE)) {
             
-            ps.setString(1, c.getDescricaoCategoriaLivro());
+            ps.setString(1, c.getDescricao());
             ps.setInt(2, c.getIdCategoriaLivro());
             return ps.executeUpdate() > 0;
         } catch (SQLException e) {
@@ -49,11 +49,11 @@ public class CategoriaLivroDAO implements Serializable {
         }
     }
 
-    public boolean delete(CategoriaLivro c) {
+    public boolean delete(Integer id) {
         try (Connection conn = ConnectionDB.getConnection();
              PreparedStatement ps = conn.prepareStatement(DELETE)) {
             
-            ps.setInt(1, c.getIdCategoriaLivro());
+            ps.setInt(1, id);
             return ps.executeUpdate() > 0;
         } catch (SQLException e) {
             e.printStackTrace();
@@ -112,7 +112,7 @@ public class CategoriaLivroDAO implements Serializable {
     private CategoriaLivro mapearResultSet(ResultSet rs) throws SQLException {
         CategoriaLivro c = new CategoriaLivro();
         c.setIdCategoriaLivro(rs.getInt("id_categoria_livro"));
-        c.setDescricaoCategoriaLivro(rs.getString("descricao_categorias_livros")); 
+        c.setDescricao(rs.getString("descricao")); 
         return c;
     }
 }

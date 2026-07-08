@@ -1,4 +1,4 @@
-package mglbibliotecasd.dao;
+package skylink.mglbiblioteca.DAO;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -6,8 +6,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-import mglbibliotecasd.model.Utilizador;
 import skylink.mglbiblioteca.bdutil.ConnectionDB;
+import skylink.mglbiblioteca.model.Utilizador;
 
 public class UtilizadorDAO {
 

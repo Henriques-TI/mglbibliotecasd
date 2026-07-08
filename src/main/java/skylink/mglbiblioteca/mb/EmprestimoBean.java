@@ -1,4 +1,4 @@
-package mglbibliotecasd.mb;
+package skylink.mglbiblioteca.DAO;
 
 import jakarta.annotation.PostConstruct;
 import jakarta.faces.application.FacesMessage;
@@ -11,7 +11,6 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import mglbibliotecasd.dao.EmprestimoDAO;
-import mglbibliotecasd.dao.LivroDAO;
 import mglbibliotecasd.modelo.Emprestimo;
 import skylink.mglbiblioteca.model.Livro;
 

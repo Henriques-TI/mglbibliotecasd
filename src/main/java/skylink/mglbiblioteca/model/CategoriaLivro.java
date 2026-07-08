@@ -4,7 +4,6 @@ import java.io.Serializable;
 import java.util.Objects;
 
 /**
- *
  * @Henriques
  */
 public class CategoriaLivro implements Serializable {
@@ -12,18 +11,14 @@ public class CategoriaLivro implements Serializable {
     private static final long serialVersionUID = 1L;
 
     private Integer idCategoriaLivro;
-    private String descricaoCategoriaLivro;
+    private String descricao;
 
     public CategoriaLivro() {
     }
 
-    public CategoriaLivro(Integer idCategoriaLivro, String descricaoCategoriaLivro) {
+    public CategoriaLivro(Integer idCategoriaLivro, String descricao) {
         this.idCategoriaLivro = idCategoriaLivro;
-        this.descricaoCategoriaLivro = descricaoCategoriaLivro;
-    }
-
-    public static long getSerialVersionUID() {
-        return serialVersionUID;
+        this.descricao = descricao;
     }
 
     public Integer getIdCategoriaLivro() {
@@ -34,12 +29,12 @@ public class CategoriaLivro implements Serializable {
         this.idCategoriaLivro = idCategoriaLivro;
     }
 
-    public String getDescricaoCategoriaLivro() {
-        return descricaoCategoriaLivro;
+    public String getDescricao() {
+        return descricao;
     }
 
-    public void setDescricaoCategoriaLivro(String descricaoCategoriaLivro) {
-        this.descricaoCategoriaLivro = descricaoCategoriaLivro;
+    public void setDescricao(String descricao) {
+        this.descricao = descricao;
     }
 
     @Override
@@ -49,7 +44,6 @@ public class CategoriaLivro implements Serializable {
         return hash;
     }
 
-    
     @Override
     public boolean equals(Object obj) {
         if (this == obj) {
@@ -63,10 +57,5 @@ public class CategoriaLivro implements Serializable {
         }
         final CategoriaLivro other = (CategoriaLivro) obj;
         return Objects.equals(this.idCategoriaLivro, other.idCategoriaLivro);
-    }
-
-    @Override
-    public String toString() {
-        return "CategoriaLivro{" + "idCategoriaLivro=" + idCategoriaLivro + ", descricaoCategoriaLivro=" + descricaoCategoriaLivro + '}';
     }
 }

@@ -1,4 +1,4 @@
-package mglbibliotecasd.dao;
+package skylink.mglbiblioteca.DAO;
 
 import java.io.Serializable;
 import java.sql.Connection;
@@ -24,22 +24,23 @@ public class LivroDAO implements Serializable {
     private static final String DELETE = "DELETE FROM livros WHERE id_livro = ?";
 
     private static final String SELECT_BASE
-            = "SELECT l.*, c.descricao_categorias_livros, p.posicao_prateleira AS descricao_prateleira "
+            = "SELECT l.*, c.descricao AS descricao_categoria, p.posicao_prateleira AS descricao_prateleira "
             + "FROM livros l "
-            + "LEFT JOIN categorias_livros c ON l.id_categoria_livro = c.id_categoria_livro "
+            + "LEFT JOIN categoria_livro c ON l.id_categoria_livro = c.id_categoria_livro "
             + "LEFT JOIN prateleira p ON l.id_prateleira = p.id_prateleira";
 
     public boolean save(Livro livro) {
-        try (Connection conn = ConnectionDB.getConnection(); PreparedStatement ps = conn.prepareStatement(INSERT)) {
-
+        try (Connection conn = ConnectionDB.getConnection(); 
+             PreparedStatement ps = conn.prepareStatement(INSERT)) {
+            
             ps.setString(1, livro.getTitulo());
             ps.setString(2, livro.getAutor());
             ps.setString(3, livro.getEditora());
-            ps.setObject(4, livro.getAnoPublicacao());
-            ps.setObject(5, (livro.getCategoriaLivro() != null) ? livro.getCategoriaLivro().getIdCategoriaLivro() : null);
-            ps.setObject(6, (livro.getPrateleira() != null) ? livro.getPrateleira().getIdPrateleira() : null);
+            if (livro.getAnoPublicacao() != null) ps.setInt(4, livro.getAnoPublicacao()); else ps.setNull(4, java.sql.Types.INTEGER);
+            if (livro.getCategoriaLivro() != null) ps.setInt(5, livro.getCategoriaLivro().getIdCategoriaLivro()); else ps.setNull(5, java.sql.Types.INTEGER);
+            if (livro.getPrateleira() != null) ps.setInt(6, livro.getPrateleira().getIdPrateleira()); else ps.setNull(6, java.sql.Types.INTEGER);
             ps.setInt(7, livro.getQuantidadeDisponivel());
-
+            
             return ps.executeUpdate() > 0;
         } catch (SQLException e) {
             e.printStackTrace();
@@ -48,17 +49,18 @@ public class LivroDAO implements Serializable {
     }
 
     public boolean update(Livro livro) {
-        try (Connection conn = ConnectionDB.getConnection(); PreparedStatement ps = conn.prepareStatement(UPDATE)) {
-
+        try (Connection conn = ConnectionDB.getConnection(); 
+             PreparedStatement ps = conn.prepareStatement(UPDATE)) {
+            
             ps.setString(1, livro.getTitulo());
             ps.setString(2, livro.getAutor());
             ps.setString(3, livro.getEditora());
-            ps.setObject(4, livro.getAnoPublicacao());
-            ps.setObject(5, (livro.getCategoriaLivro() != null) ? livro.getCategoriaLivro().getIdCategoriaLivro() : null);
-            ps.setObject(6, (livro.getPrateleira() != null) ? livro.getPrateleira().getIdPrateleira() : null);
+            if (livro.getAnoPublicacao() != null) ps.setInt(4, livro.getAnoPublicacao()); else ps.setNull(4, java.sql.Types.INTEGER);
+            if (livro.getCategoriaLivro() != null) ps.setInt(5, livro.getCategoriaLivro().getIdCategoriaLivro()); else ps.setNull(5, java.sql.Types.INTEGER);
+            if (livro.getPrateleira() != null) ps.setInt(6, livro.getPrateleira().getIdPrateleira()); else ps.setNull(6, java.sql.Types.INTEGER);
             ps.setInt(7, livro.getQuantidadeDisponivel());
             ps.setInt(8, livro.getIdLivro());
-
+            
             return ps.executeUpdate() > 0;
         } catch (SQLException e) {
             e.printStackTrace();
@@ -66,10 +68,10 @@ public class LivroDAO implements Serializable {
         }
     }
 
-    public boolean delete(Livro livro) {
-        try (Connection conn = ConnectionDB.getConnection(); PreparedStatement ps = conn.prepareStatement(DELETE)) {
-
-            ps.setInt(1, livro.getIdLivro());
+    public boolean delete(Integer id) {
+        try (Connection conn = ConnectionDB.getConnection(); 
+             PreparedStatement ps = conn.prepareStatement(DELETE)) {
+            ps.setInt(1, id);
             return ps.executeUpdate() > 0;
         } catch (SQLException e) {
             e.printStackTrace();
@@ -79,9 +81,10 @@ public class LivroDAO implements Serializable {
 
     public List<Livro> findAll() {
         List<Livro> lista = new ArrayList<>();
-        String sql = SELECT_BASE;
-        try (Connection conn = ConnectionDB.getConnection(); PreparedStatement ps = conn.prepareStatement(sql); ResultSet rs = ps.executeQuery()) {
-
+        String sql = SELECT_BASE + " ORDER BY l.titulo";
+        try (Connection conn = ConnectionDB.getConnection(); 
+             PreparedStatement ps = conn.prepareStatement(sql); 
+             ResultSet rs = ps.executeQuery()) {
             while (rs.next()) {
                 lista.add(mapearResultSet(rs));
             }
@@ -93,8 +96,8 @@ public class LivroDAO implements Serializable {
 
     public Livro findById(Integer id) {
         String sql = SELECT_BASE + " WHERE l.id_livro = ?";
-        try (Connection conn = ConnectionDB.getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
-
+        try (Connection conn = ConnectionDB.getConnection(); 
+             PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setInt(1, id);
             try (ResultSet rs = ps.executeQuery()) {
                 if (rs.next()) {
@@ -105,43 +108,6 @@ public class LivroDAO implements Serializable {
             e.printStackTrace();
         }
         return null;
-    }
-
-    public List<Livro> buscarPorTitulo(String titulo) {
-        return buscarPorTituloEAutor(titulo, "");
-    }
-
-    public List<Livro> buscarPorTituloEAutor(String titulo, String autor) {
-        List<Livro> lista = new ArrayList<>();
-        StringBuilder sql = new StringBuilder(SELECT_BASE);
-        sql.append(" WHERE 1=1 ");
-
-        if (titulo != null && !titulo.isEmpty()) {
-            sql.append(" AND l.titulo LIKE ? ");
-        }
-        if (autor != null && !autor.isEmpty()) {
-            sql.append(" AND l.autor LIKE ? ");
-        }
-
-        try (Connection conn = ConnectionDB.getConnection(); PreparedStatement ps = conn.prepareStatement(sql.toString())) {
-
-            int index = 1;
-            if (titulo != null && !titulo.isEmpty()) {
-                ps.setString(index++, "%" + titulo + "%");
-            }
-            if (autor != null && !autor.isEmpty()) {
-                ps.setString(index++, "%" + autor + "%");
-            }
-
-            try (ResultSet rs = ps.executeQuery()) {
-                while (rs.next()) {
-                    lista.add(mapearResultSet(rs));
-                }
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return lista;
     }
 
     private Livro mapearResultSet(ResultSet rs) throws SQLException {
@@ -158,7 +124,7 @@ public class LivroDAO implements Serializable {
         if (!rs.wasNull()) {
             CategoriaLivro cat = new CategoriaLivro();
             cat.setIdCategoriaLivro(idCat);
-            cat.setDescricaoCategoriaLivro(rs.getString("descricao_categorias_livros"));
+            cat.setDescricao(rs.getString("descricao_categoria")); 
             l.setCategoriaLivro(cat);
         }
 
@@ -166,10 +132,10 @@ public class LivroDAO implements Serializable {
         if (!rs.wasNull()) {
             Prateleira prat = new Prateleira();
             prat.setIdPrateleira(idPrat);
-            prat.setClassificacao(rs.getString("descricao_prateleira"));
+            prat.setPosicaoPrateleira(rs.getString("descricao_prateleira"));
             l.setPrateleira(prat);
         }
-
+        
         l.setQuantidadeDisponivel(rs.getInt("quantidade_disponivel"));
         return l;
     }
