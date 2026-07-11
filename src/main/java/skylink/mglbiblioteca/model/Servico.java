@@ -13,17 +13,19 @@ public class Servico implements Serializable {
     private static final long serialVersionUID = 1L;
 
     private Integer idServico;
-    private Utilizador utilizador;     
-    private Funcionario funcionario;   
-    private String tipoServico;        
-    private Sala sala;                 
-    private Computador computador;     
-    private Integer quantidadePaginas; 
+    private Utilizador utilizador;
+    private Funcionario funcionario;
+    private String tipoServico;
+    private Sala sala;
+    private Computador computador;
+    private Integer quantidadePaginas;
     private Date dataServico;
-    private String horaInicio;   
-    private String horaFim;            // Mapeia o tipo TIME (pode usar String ou LocalTime)
+    private String horaInicio;
+    private String horaFim;
     private BigDecimal custoTotal;
-    private String status;             // Mapeia o ENUM ('Pendente', 'Confirmado', etc.)
+    private String status;
+    private Date dataRegisto;
+  
 
     public Servico() {
         this.utilizador = new Utilizador();
@@ -130,6 +132,15 @@ public class Servico implements Serializable {
     public void setStatus(String status) {
         this.status = status;
     }
+
+    public Date getDataRegisto() {
+        return dataRegisto;
+    }
+
+    public void setDataRegisto(Date dataRegisto) {
+        this.dataRegisto = dataRegisto;
+    }
+
 
     @Override
     public int hashCode() {

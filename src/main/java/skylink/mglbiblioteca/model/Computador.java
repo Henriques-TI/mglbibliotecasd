@@ -1,6 +1,7 @@
 package skylink.mglbiblioteca.model;
 
 import java.io.Serializable;
+import java.util.Date;
 import java.util.Objects;
 
 /**
@@ -12,8 +13,9 @@ public class Computador implements Serializable {
 
     private Integer idEquipamento;
     private String refEquipamento;
-    private String status; // Mapeia o ENUM ('Disponível', 'Em Uso', 'Manutenção')
+    private String status;
     private String localizacao;
+    private Date dataRegisto;
 
     public Computador() {
     }
@@ -56,6 +58,15 @@ public class Computador implements Serializable {
     public void setLocalizacao(String localizacao) {
         this.localizacao = localizacao;
     }
+
+    public Date getDataRegisto() {
+        return dataRegisto;
+    }
+
+    public void setDataRegisto(Date dataRegisto) {
+        this.dataRegisto = dataRegisto;
+    }
+
 
     @Override
     public int hashCode() {

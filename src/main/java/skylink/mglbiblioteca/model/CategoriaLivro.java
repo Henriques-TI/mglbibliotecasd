@@ -1,31 +1,26 @@
 package skylink.mglbiblioteca.model;
 
-import java.io.Serializable;
-import java.util.Objects;
+import java.sql.Timestamp;
 
-/**
- * @Henriques
- */
-public class CategoriaLivro implements Serializable {
-
-    private static final long serialVersionUID = 1L;
-
-    private Integer idCategoriaLivro;
+public class CategoriaLivro {
+    private int idCategoriaLivro;
     private String descricao;
+    private Timestamp dataRegisto;
 
     public CategoriaLivro() {
     }
 
-    public CategoriaLivro(Integer idCategoriaLivro, String descricao) {
+    public CategoriaLivro(int idCategoriaLivro, String descricao, Timestamp dataRegisto) {
         this.idCategoriaLivro = idCategoriaLivro;
         this.descricao = descricao;
+        this.dataRegisto = dataRegisto;
     }
 
-    public Integer getIdCategoriaLivro() {
+    public int getIdCategoriaLivro() {
         return idCategoriaLivro;
     }
 
-    public void setIdCategoriaLivro(Integer idCategoriaLivro) {
+    public void setIdCategoriaLivro(int idCategoriaLivro) {
         this.idCategoriaLivro = idCategoriaLivro;
     }
 
@@ -37,25 +32,11 @@ public class CategoriaLivro implements Serializable {
         this.descricao = descricao;
     }
 
-    @Override
-    public int hashCode() {
-        int hash = 7;
-        hash = 29 * hash + Objects.hashCode(this.idCategoriaLivro);
-        return hash;
+    public Timestamp getDataRegisto() {
+        return dataRegisto;
     }
 
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (obj == null) {
-            return false;
-        }
-        if (getClass() != obj.getClass()) {
-            return false;
-        }
-        final CategoriaLivro other = (CategoriaLivro) obj;
-        return Objects.equals(this.idCategoriaLivro, other.idCategoriaLivro);
+    public void setDataRegisto(Timestamp dataRegisto) {
+        this.dataRegisto = dataRegisto;
     }
 }

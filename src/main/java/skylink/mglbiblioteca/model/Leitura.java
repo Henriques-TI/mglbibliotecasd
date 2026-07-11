@@ -12,12 +12,15 @@ public class Leitura implements Serializable {
     private static final long serialVersionUID = 1L;
 
     private Integer idLeitura;
-    private Integer idUtilizador; 
-    private Integer idLivro; 
+    private Integer idUtilizador;
+    private Integer idLivro;
+    private Integer idFuncionario;
     private Date dataRetirada;
     private Date dataDevolucaoPrevista;
     private Date dataDevolucaoReal;
-    private String status; 
+    private String status;
+    private Date dataRegisto;
+
     public Leitura() {
     }
 
@@ -43,6 +46,14 @@ public class Leitura implements Serializable {
 
     public void setIdLivro(Integer idLivro) {
         this.idLivro = idLivro;
+    }
+
+    public Integer getIdFuncionario() {
+        return idFuncionario;
+    }
+
+    public void setIdFuncionario(Integer idFuncionario) {
+        this.idFuncionario = idFuncionario;
     }
 
     public Date getDataRetirada() {
@@ -75,6 +86,14 @@ public class Leitura implements Serializable {
 
     public void setStatus(String status) {
         this.status = status;
+    }
+
+    public Date getDataRegisto() {
+        return dataRegisto;
+    }
+
+    public void setDataRegisto(Date dataRegisto) {
+        this.dataRegisto = dataRegisto;
     }
 
     @Override

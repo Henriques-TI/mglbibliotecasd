@@ -1,0 +1,86 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="jakarta.faces.facelets"
+      xmlns:h="jakarta.faces.html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="jakarta.faces.core">
+
+    <body>
+
+        <ui:composition template="./../WEB-INF/templates/template_gestao_tabelas.xhtml">
+
+            <ui:define name="top">
+                Lista de Serviços Oferecido
+            </ui:define>
+
+
+            <ui:define name="content">
+                <h:form>
+                <p:panel header="Serviços Registados" style="max-width:800px; margin: 0 auto;">
+                        <p:dataTable id="tblServicos" value="#{servicoBean.servicos}" var="s" 
+                                     emptyMessage="Nenhum serviço registado." rows="5" paginator="true" 
+                                     paginatorPosition="bottom" reflow="true">
+                            
+                            <p:column headerText="ID" style="width: 8%; text-align: center; font-weight: bold;">
+                                <h:outputText value="#{s.idServico}" />
+                            </p:column>
+
+                            <p:column headerText="TIPO DE SERVIÇO" style="font-weight: bold;">
+                                <h:outputText value="#{s.tipoServico}" />
+                            </p:column>
+
+                            <p:column headerText="UTILIZADOR" style="font-weight: bold;">
+                                <h:outputText value="#{s.utilizador.nome}" />
+                            </p:column>
+
+                            <p:column headerText="DATA" style="width: 14%; text-align: center; font-weight: bold;">
+                                <h:outputText value="#{s.dataServico}">
+                                    <f:convertDateTime pattern="dd/MM/yyyy" />
+                                </h:outputText>
+                            </p:column>
+
+                            <p:column headerText="HORÁRIO" style="width: 15%; text-align: center; font-weight: bold;">
+                                <h:outputText value="#{s.horaInicio} - #{s.horaFim}" />
+                            </p:column>
+
+                            <p:column headerText="TOTAL" style="width: 15%; text-align: right; font-weight: bold;">
+                                <h:outputText value="#{s.custoTotal}">
+                                    <f:convertNumber type="currency" currencySymbol="Kz" />
+                                </h:outputText>
+                            </p:column>
+
+                            <p:column headerText="STATUS" style="width: 15%; text-align: center; font-weight: bold;">
+                                <h:outputText value="#{s.status}" />
+                            </p:column>
+
+                            <p:column headerText="AÇÕES" style="width: 12%; text-align: center; font-weight: bold;">
+                                <p:commandButton icon="pi pi-pencil" update="frmServico" process="@this"
+                                                 styleClass="ui-button-success ui-button-rounded ui-button-text" 
+                                                 style="margin-right: 5px;">
+                                    <f:setPropertyActionListener value="#{s}" target="#{servicoBean.servico}" />
+                                </p:commandButton>
+                                
+                                <p:commandButton icon="pi pi-trash" action="#{servicoBean.excluir}"
+                                                 update="frmServico" process="@this"
+                                                 styleClass="ui-button-danger ui-button-rounded ui-button-text">
+                                    <f:setPropertyActionListener value="#{s}" target="#{servicoBean.servico}" />
+                                    <p:confirm header="Confirmação" message="Deseja eliminar este registo de serviço?" icon="pi pi-exclamation-triangle" />
+                                </p:commandButton>
+                            </p:column>
+                            
+                        </p:dataTable>
+                    </p:panel>
+
+                    <p:confirmDialog global="true" showEffect="fade" hideEffect="fade" responsive="true" width="350">
+                        <p:commandButton value="Não" type="button" styleClass="ui-confirmdialog-no ui-button-flat"/>
+                        <p:commandButton value="Sim" type="button" styleClass="ui-confirmdialog-yes ui-button-danger" />
+                    </p:confirmDialog>
+
+                </h:form>
+            </ui:define>
+
+        </ui:composition>
+
+    </body>
+</html>

@@ -1,4 +1,4 @@
-package skylink.mglbiblioteca.DAO;
+package skylink.mglbiblioteca.dao;
 
 import java.io.Serializable;
 import java.sql.Connection;
@@ -9,9 +9,9 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import skylink.mglbiblioteca.bdutil.ConnectionDB;
 import skylink.mglbiblioteca.model.MetodoPagamento;
 import skylink.mglbiblioteca.model.Pagamento;
-import skylink.mglbiblioteca.bdutil.ConnectionDB;
 
 /**
  * @Henriques
@@ -20,62 +20,69 @@ public class PagamentoDAO implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    private static final String INSERT = "INSERT INTO pagamentos (tipo_origem, id_referencia, id_utilizador, valor_pago, metodo_pagamento, data_pagamento) VALUES (?, ?, ?, ?, ?, ?)";
-    private static final String UPDATE = "UPDATE pagamentos SET tipo_origem = ?, id_referencia = ?, id_utilizador = ?, valor_pago = ?, metodo_pagamento = ? WHERE id_pagamento = ?";
+    private static final String INSERT = "INSERT INTO pagamentos (id_servico, id_utilizador, valor_pago, metodo_pagamento, data_pagamento) VALUES (?, ?, ?, ?, ?)";
+    private static final String UPDATE = "UPDATE pagamentos SET id_servico = ?, id_utilizador = ?, valor_pago = ?, metodo_pagamento = ?, data_pagamento = ? WHERE id_pagamento = ?";
     private static final String DELETE = "DELETE FROM pagamentos WHERE id_pagamento = ?";
     private static final String SELECT_ALL = "SELECT * FROM pagamentos ORDER BY data_pagamento DESC";
     private static final String SELECT_BY_ID = "SELECT * FROM pagamentos WHERE id_pagamento = ?";
 
     public boolean save(Pagamento p) {
+        if (p == null) return false;
+
         try (Connection conn = ConnectionDB.getConnection();
              PreparedStatement ps = conn.prepareStatement(INSERT)) {
             
-            ps.setObject(2, p.getIdReferencia());
-            ps.setObject(3, p.getIdUtilizador());
-            ps.setBigDecimal(4, p.getValorPago());
+            ps.setObject(1, p.getIdServico());
+            ps.setObject(2, p.getIdUtilizador());
+            ps.setBigDecimal(3, p.getValorPago());
             
             String metodoStr = p.getMetodoPagamento() != null ? p.getMetodoPagamento().name() : null;
             if ("Transferencia".equals(metodoStr)) metodoStr = "Transferência";
-            ps.setString(5, metodoStr);
+            ps.setString(4, metodoStr);
             
-            ps.setTimestamp(6, p.getDataPagamento() != null ? new Timestamp(p.getDataPagamento().getTime()) : new Timestamp(System.currentTimeMillis()));
+            ps.setTimestamp(5, p.getDataPagamento() != null ? new Timestamp(p.getDataPagamento().getTime()) : new Timestamp(System.currentTimeMillis()));
             
             return ps.executeUpdate() > 0;
         } catch (SQLException e) {
-            e.printStackTrace();
+            System.err.println("Erro ao salvar pagamento: " + e.getMessage());
             return false;
         }
     }
 
     public boolean update(Pagamento p) {
+        if (p == null || p.getIdPagamento() == null) return false;
+
         try (Connection conn = ConnectionDB.getConnection();
              PreparedStatement ps = conn.prepareStatement(UPDATE)) {
             
-            ps.setObject(2, p.getIdReferencia());
-            ps.setObject(3, p.getIdUtilizador());
-            ps.setBigDecimal(4, p.getValorPago());
+            ps.setObject(1, p.getIdServico());
+            ps.setObject(2, p.getIdUtilizador());
+            ps.setBigDecimal(3, p.getValorPago());
             
             String metodoStr = p.getMetodoPagamento() != null ? p.getMetodoPagamento().name() : null;
             if ("Transferencia".equals(metodoStr)) metodoStr = "Transferência";
-            ps.setString(5, metodoStr);
+            ps.setString(4, metodoStr);
             
+            ps.setTimestamp(5, p.getDataPagamento() != null ? new Timestamp(p.getDataPagamento().getTime()) : null);
             ps.setInt(6, p.getIdPagamento());
             
             return ps.executeUpdate() > 0;
         } catch (SQLException e) {
-            e.printStackTrace();
+            System.err.println("Erro ao atualizar pagamento: " + e.getMessage());
             return false;
         }
     }
 
-    public boolean delete(Pagamento p) {
+    public boolean delete(Integer id) {
+        if (id == null) return false;
+
         try (Connection conn = ConnectionDB.getConnection();
              PreparedStatement ps = conn.prepareStatement(DELETE)) {
             
-            ps.setInt(1, p.getIdPagamento());
+            ps.setInt(1, id);
             return ps.executeUpdate() > 0;
         } catch (SQLException e) {
-            e.printStackTrace();
+            System.err.println("Erro ao eliminar pagamento: " + e.getMessage());
             return false;
         }
     }
@@ -90,12 +97,14 @@ public class PagamentoDAO implements Serializable {
                 lista.add(mapearResultSet(rs));
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            System.err.println("Erro ao listar pagamentos: " + e.getMessage());
         }
         return lista;
     }
 
     public Pagamento findById(Integer id) {
+        if (id == null) return null;
+
         try (Connection conn = ConnectionDB.getConnection();
              PreparedStatement ps = conn.prepareStatement(SELECT_BY_ID)) {
 
@@ -106,7 +115,7 @@ public class PagamentoDAO implements Serializable {
                 }
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            System.err.println("Erro ao buscar pagamento por ID: " + e.getMessage());
         }
         return null;
     }
@@ -114,20 +123,23 @@ public class PagamentoDAO implements Serializable {
     private Pagamento mapearResultSet(ResultSet rs) throws SQLException {
         Pagamento p = new Pagamento();
         p.setIdPagamento(rs.getInt("id_pagamento"));
-        
-        
-        p.setIdReferencia(rs.getInt("id_referencia"));
+        p.setIdServico(rs.getInt("id_servico"));
         p.setIdUtilizador(rs.getInt("id_utilizador"));
         p.setValorPago(rs.getBigDecimal("valor_pago"));
         
         String metodoStr = rs.getString("metodo_pagamento");
         if (metodoStr != null) {
             if ("Transferência".equals(metodoStr)) metodoStr = "Transferencia";
-            p.setMetodoPagamento(MetodoPagamento.valueOf(metodoStr));
+            try {
+                p.setMetodoPagamento(MetodoPagamento.valueOf(metodoStr));
+            } catch (IllegalArgumentException e) {
+                System.err.println("Método de pagamento inválido no banco: " + metodoStr);
+            }
         }
         
-        Timestamp timestamp = rs.getTimestamp("data_pagamento");
-        if (timestamp != null) p.setDataPagamento(new Date(timestamp.getTime()));
+        p.setDataPagamento(rs.getTimestamp("data_pagamento"));
+        
+        p.setDataRegisto(rs.getTimestamp("data_registo"));
         
         return p;
     }

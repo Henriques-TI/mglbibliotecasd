@@ -11,9 +11,8 @@
         <ui:composition template="./../WEB-INF/templates/template_funcionario.xhtml">
 
             <ui:define name="top">
-                Lista dos Funcionarios
+                Lista dos Funcionários
             </ui:define>
-
 
             <ui:define name="content">
                 <f:view>
@@ -23,10 +22,9 @@
 
                         <p:toolbar>
                             <p:toolbarGroup align="left">
-
                                 <p:inputText id="pesquisa"
                                              value="#{funcionarioBean.filtroNome}"
-                                             placeholder="Pesquisar por Nome ou Telefone..."
+                                             placeholder="Pesquisar por Nome..."
                                              style="width: 400px;" />
 
                                 <p:commandButton value="Pesquisar"
@@ -42,10 +40,8 @@
                                                  styleClass="ui-button-secondary"
                                                  style="margin-left: 4px;"
                                                  immediate="true">
-                                    <f:setPropertyActionListener value=""
-                                                                 target="#{funcionarioBean.filtroNome}" />
+                                    <f:setPropertyActionListener value="" target="#{funcionarioBean.filtroNome}" />
                                 </p:commandButton>
-
                             </p:toolbarGroup>
                         </p:toolbar>
                     </h:form>
@@ -54,61 +50,60 @@
 
                         <p:dataTable id="tabela"
                                      value="#{funcionarioBean.funcionarios}"
-                                     var="liv"
+                                     var="func"
                                      paginator="true"
                                      rows="10"
                                      rowsPerPageTemplate="5,10,20"
                                      paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
                                      currentPageReportTemplate="{startRecord}-{endRecord} de {totalRecords}"
-                                     emptyMessage="Nenhum funcionario encontrado."
+                                     emptyMessage="Nenhum funcionário encontrado."
                                      stripedRows="true"
                                      style="margin-top: 10px;">
 
                             <p:column headerText="Nº Registo" width="80" style="text-align:center;">
-                                <h:outputText value="#{funcionarioBean.funcionario.idFuncionario}" />
+                                <h:outputText value="#{func.idFuncionario}" />
                             </p:column>
 
-                           <p:column headerText="Nome do Funcionario"width="80">
-                            <h:outputText value="#{funcionarioBean.funcionario.nome}" />
+                            <p:column headerText="Nome do Funcionário">
+                                <h:outputText value="#{func.nome}" />
                             </p:column>
 
-                            <p:column headerText="Cargo" width="120">
-                                <h:outputText value="#{funcionarioBean.funcionario.cargo}" />
+                            <p:column headerText="Cargo" width="150">
+                                <h:outputText value="#{func.cargo}" />
                             </p:column>
 
-                            <p:column headerText="Email do Funcionario" width="80">
-                                <h:outputText value="#{funcionarioBean.funcionario.email}" />
+                            <p:column headerText="Email do Funcionário">
+                                <h:outputText value="#{func.email}" />
                             </p:column>
 
-                            <p:column headerText="Telefone do Funcionario">
-                                <h:outputText value="#{funcionarioBean.funcionario.telefone}" />
+                            <p:column headerText="Telefone do Funcionário" width="150">
+                                <h:outputText value="#{func.telefone}" />
                             </p:column>
-                            <p:column headerText="Operações" width="150" style="text-align:center;">
+
+                            <p:column headerText="Operações" width="180" style="text-align:center;">
                                 <p:commandButton value="Editar"
                                                  action="#{funcionarioBean.editar()}"
                                                  styleClass="ui-button-warning"
-                                                 style="margin-right: 5px;">
-                                    <f:setPropertyActionListener value="#{fun}" target="#{funcionarioBean.funcionarioSelecionado}" />
+                                                 style="margin-right: 5px;"
+                                                 icon="pi pi-pencil">
+                                    <f:setPropertyActionListener value="#{func}" target="#{funcionarioBean.funcionarioSelecionado}" />
                                 </p:commandButton>
 
                                 <p:commandButton value="Eliminar"
                                                  action="#{funcionarioBean.excluir}"
                                                  update="formTabela:tabela formPesquisa:growl"
-                                                 styleClass="ui-button-danger">
-                                    <f:setPropertyActionListener value="#{fun}" target="#{funcionarioBean.funcionarioSelecionado}" />
-                                    <p:confirm header="Confirmação" message="Deseja mesmo eliminar este Funcionario?" icon="pi pi-exclamation-triangle" />
+                                                 styleClass="ui-button-danger"
+                                                 icon="pi pi-trash">
+                                    <f:setPropertyActionListener value="#{func}" target="#{funcionarioBean.funcionarioSelecionado}" />
+                                    <p:confirm header="Confirmação" message="Deseja mesmo eliminar este Funcionário?" icon="pi pi-exclamation-triangle" />
                                 </p:commandButton>
                             </p:column>
 
                         </p:dataTable>
 
-                        <p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
-                            <p:commandButton value="Sim" type="button"
-                                             styleClass="ui-confirmdialog-yes ui-button-danger"
-                                             icon="pi pi-check" />
-                            <p:commandButton value="Não" type="button"
-                                             styleClass="ui-confirmdialog-no ui-button-secondary"
-                                             icon="pi pi-times" />
+                        <p:confirmDialog global="true" showEffect="fade" hideEffect="fade" responsive="true" width="350">
+                            <p:commandButton value="Não" type="button" styleClass="ui-confirmdialog-no ui-button-flat"/>
+                            <p:commandButton value="Sim" type="button" styleClass="ui-confirmdialog-yes ui-button-danger" />
                         </p:confirmDialog>
 
                     </h:form>

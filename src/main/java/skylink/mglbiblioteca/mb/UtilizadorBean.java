@@ -7,9 +7,12 @@ import jakarta.faces.view.ViewScoped;
 import jakarta.inject.Named;
 import java.io.Serializable;
 import java.util.List;
-import skylink.mglbiblioteca.DAO.UtilizadorDAO;
+import skylink.mglbiblioteca.dao.UtilizadorDAO;
 import skylink.mglbiblioteca.model.Utilizador;
 
+/**
+ * @author Henriques
+ */
 @Named(value = "utilizadorBean")
 @ViewScoped
 public class UtilizadorBean implements Serializable {
@@ -27,22 +30,50 @@ public class UtilizadorBean implements Serializable {
     }
 
     public void carregarUtilizadores() {
-        this.listaUtilizadores = utilizadorDAO.listarTodos();
+        this.listaUtilizadores = utilizadorDAO.findAll();
     }
 
     public void salvar() {
         FacesContext context = FacesContext.getCurrentInstance();
-        
-        boolean sucesso = utilizadorDAO.inserir(this.utilizador);
-        
+        boolean sucesso;
+
+        if (this.utilizador.getIdUtilizador() != null) {
+            sucesso = utilizadorDAO.update(this.utilizador);
+        } else {
+            sucesso = utilizadorDAO.save(this.utilizador);
+        }
+
         if (sucesso) {
+            String mensagem = this.utilizador.getIdUtilizador() != null ? "atualizado" : "cadastrado";
             context.addMessage(null, new FacesMessage(
-                FacesMessage.SEVERITY_INFO, "Sucesso", "Utilizador cadastrado com sucesso!"));
+                FacesMessage.SEVERITY_INFO, "Sucesso", "Utilizador " + mensagem + " com sucesso!"));
             limparFormulario();
             carregarUtilizadores();
         } else {
             context.addMessage(null, new FacesMessage(
-                FacesMessage.SEVERITY_ERROR, "Erro", "Falha ao salvar. Verifique se o BI ou E-mail já existem."));
+                FacesMessage.SEVERITY_ERROR, "Erro", "Falha ao salvar. Verifique os dados fornecidos."));
+        }
+    }
+
+    public void prepararEdicao(Utilizador u) {
+        this.utilizador = u;
+    }
+
+    public void eliminar(Utilizador u) {
+        FacesContext context = FacesContext.getCurrentInstance();
+        if (u != null && u.getIdUtilizador() != null) {
+            boolean sucesso = utilizadorDAO.delete(u.getIdUtilizador());
+            if (sucesso) {
+                context.addMessage(null, new FacesMessage(
+                    FacesMessage.SEVERITY_INFO, "Sucesso", "Utilizador eliminado com sucesso!"));
+                carregarUtilizadores();
+                if (this.utilizador.equals(u)) {
+                    limparFormulario();
+                }
+            } else {
+                context.addMessage(null, new FacesMessage(
+                    FacesMessage.SEVERITY_ERROR, "Erro", "Não foi possível eliminar o utilizador."));
+            }
         }
     }
 
@@ -50,7 +81,15 @@ public class UtilizadorBean implements Serializable {
         this.utilizador = new Utilizador();
     }
 
-    public Utilizador getUtilizador() { return utilizador; }
-    public void setUtilizador(Utilizador utilizador) { this.utilizador = utilizador; }
-    public List<Utilizador> getListaUtilizadores() { return listaUtilizadores; }
+    public Utilizador getUtilizador() { 
+        return utilizador; 
+    }
+    
+    public void setUtilizador(Utilizador utilizador) { 
+        this.utilizador = utilizador; 
+    }
+    
+    public List<Utilizador> getListaUtilizadores() { 
+        return listaUtilizadores; 
+    }
 }

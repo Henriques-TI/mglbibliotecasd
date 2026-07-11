@@ -4,16 +4,15 @@ import jakarta.annotation.PostConstruct;
 import jakarta.faces.application.FacesMessage;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.view.ViewScoped;
-import jakarta.inject.Inject;
 import jakarta.inject.Named;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-import mglbiblioteca.dao.PrateleiraDAO;
+import skylink.mglbiblioteca.dao.PrateleiraDAO;
 import skylink.mglbiblioteca.model.Prateleira;
 
 /**
- * @Henriques
+ * @author Henriques
  */
 @Named(value = "prateleiraBean")
 @ViewScoped
@@ -21,8 +20,7 @@ public class PrateleiraBean implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    @Inject
-    private PrateleiraDAO prateleiraDAO;
+    private final PrateleiraDAO prateleiraDAO = new PrateleiraDAO();
 
     private Prateleira prateleira;
     private Prateleira prateleiraSelecionada;
@@ -39,14 +37,27 @@ public class PrateleiraBean implements Serializable {
     }
 
     public void carregarPrateleiras() {
-        prateleiras = prateleiraDAO.findAll();
+        try {
+            prateleiras = prateleiraDAO.findAll();
+            if (prateleiras == null) {
+                prateleiras = new ArrayList<>();
+            }
+        } catch (Exception e) {
+            addMensagem(FacesMessage.SEVERITY_ERROR, "Erro", "Não foi possível carregar as prateleiras: " + e.getMessage());
+            prateleiras = new ArrayList<>(); 
+        }
     }
 
     public void pesquisar() {
         if (filtroPosicao != null && !filtroPosicao.trim().isEmpty()) {
-            prateleiras = prateleiraDAO.buscarPorPosicao(filtroPosicao.trim());
-            if (prateleiras.isEmpty()) {
-                addMensagem(FacesMessage.SEVERITY_INFO, "Informação", "Nenhuma prateleira encontrada nesta posição.");
+            try {
+                prateleiras = prateleiraDAO.buscarPorPosicao(filtroPosicao.trim());
+                if (prateleiras == null || prateleiras.isEmpty()) {
+                    prateleiras = new ArrayList<>();
+                    addMensagem(FacesMessage.SEVERITY_INFO, "Informação", "Nenhuma prateleira encontrada nesta posição.");
+                }
+            } catch (Exception e) {
+                addMensagem(FacesMessage.SEVERITY_ERROR, "Erro", "Falha na busca: " + e.getMessage());
             }
         } else {
             addMensagem(FacesMessage.SEVERITY_WARN, "Atenção", "Informe uma posição para pesquisar.");
@@ -61,21 +72,23 @@ public class PrateleiraBean implements Serializable {
     }
 
     public void salvar() {
-        if (prateleira == null) return;
+        try {
+            boolean sucesso;
+            if (prateleira.getIdPrateleira() == null) {
+                sucesso = prateleiraDAO.save(prateleira);
+            } else {
+                sucesso = prateleiraDAO.update(prateleira);
+            }
 
-        boolean sucesso;
-        if (prateleira.getIdPrateleira() == null) {
-            sucesso = prateleiraDAO.save(prateleira);
-        } else {
-            sucesso = prateleiraDAO.update(prateleira);
-        }
-
-        if (sucesso) {
-            addMensagem(FacesMessage.SEVERITY_INFO, "Sucesso", "Prateleira guardada com sucesso!");
-            this.prateleira = new Prateleira(); 
-            carregarPrateleiras(); 
-        } else {
-            addMensagem(FacesMessage.SEVERITY_ERROR, "Erro", "Erro ao processar operação na base de dados.");
+            if (sucesso) {
+                addMensagem(FacesMessage.SEVERITY_INFO, "Sucesso", "Prateleira guardada com sucesso!");
+                this.prateleira = new Prateleira(); 
+                carregarPrateleiras(); 
+            } else {
+                addMensagem(FacesMessage.SEVERITY_ERROR, "Erro", "Erro ao processar operação na base de dados.");
+            }
+        } catch (Exception e) {
+            addMensagem(FacesMessage.SEVERITY_ERROR, "Erro fatal", "Erro ao salvar: " + e.getMessage());
         }
     }
 
@@ -85,12 +98,16 @@ public class PrateleiraBean implements Serializable {
             return;
         }
 
-        if (prateleiraDAO.delete(prateleiraSelecionada)) {
-            addMensagem(FacesMessage.SEVERITY_INFO, "Sucesso", "Prateleira removida.");
-            prateleiras.remove(prateleiraSelecionada);
-            this.prateleiraSelecionada = null;
-        } else {
-            addMensagem(FacesMessage.SEVERITY_ERROR, "Erro", "Não foi possível excluir a prateleira.");
+        try {
+            if (prateleiraDAO.delete(prateleiraSelecionada.getIdPrateleira())) {
+                addMensagem(FacesMessage.SEVERITY_INFO, "Sucesso", "Prateleira removida.");
+                prateleiras.remove(prateleiraSelecionada);
+                this.prateleiraSelecionada = null;
+            } else {
+                addMensagem(FacesMessage.SEVERITY_ERROR, "Erro", "Não foi possível excluir a prateleira.");
+            }
+        } catch (Exception e) {
+            addMensagem(FacesMessage.SEVERITY_ERROR, "Erro", "Erro ao excluir: " + e.getMessage());
         }
     }
 
@@ -104,39 +121,18 @@ public class PrateleiraBean implements Serializable {
     }
 
     public void addMensagem(FacesMessage.Severity severidade, String resumo, String detalhe) {
-        FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(severidade, resumo, detalhe));
+        FacesContext context = FacesContext.getCurrentInstance();
+        if (context != null) {
+            context.addMessage(null, new FacesMessage(severidade, resumo, detalhe));
+        }
     }
 
-
-    public Prateleira getPrateleira() {
-        return prateleira;
-    }
-
-    public void setPrateleira(Prateleira prateleira) {
-        this.prateleira = prateleira;
-    }
-
-    public Prateleira getPrateleiraSelecionada() {
-        return prateleiraSelecionada;
-    }
-
-    public void setPrateleiraSelecionada(Prateleira prateleiraSelecionada) {
-        this.prateleiraSelecionada = prateleiraSelecionada;
-    }
-
-    public List<Prateleira> getPrateleiras() {
-        return prateleiras;
-    }
-
-    public void setPrateleiras(List<Prateleira> prateleiras) {
-        this.prateleiras = prateleiras;
-    }
-
-    public String getFiltroPosicao() {
-        return filtroPosicao;
-    }
-
-    public void setFiltroPosicao(String filtroPosicao) {
-        this.filtroPosicao = filtroPosicao;
-    }
+    public Prateleira getPrateleira() { return prateleira; }
+    public void setPrateleira(Prateleira prateleira) { this.prateleira = prateleira; }
+    public Prateleira getPrateleiraSelecionada() { return prateleiraSelecionada; }
+    public void setPrateleiraSelecionada(Prateleira prateleiraSelecionada) { this.prateleiraSelecionada = prateleiraSelecionada; }
+    public List<Prateleira> getPrateleiras() { return prateleiras; }
+    public void setPrateleiras(List<Prateleira> prateleiras) { this.prateleiras = prateleiras; }
+    public String getFiltroPosicao() { return filtroPosicao; }
+    public void setFiltroPosicao(String filtroPosicao) { this.filtroPosicao = filtroPosicao; }
 }

@@ -6,10 +6,9 @@ import jakarta.faces.context.FacesContext;
 import jakarta.faces.view.ViewScoped;
 import jakarta.inject.Named;
 import java.io.Serializable;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-import skylink.mglbiblioteca.DAO.LeituraDAO;
+import skylink.mglbiblioteca.dao.LeituraDAO;
 import skylink.mglbiblioteca.model.Leitura;
 
 /**
@@ -21,94 +20,102 @@ public class LeituraBean implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
+    private final LeituraDAO leituraDAO = new LeituraDAO();
+
     private Leitura leitura;
-    private final LeituraDAO leituraDAO;
-    private List<Leitura> listaLeituras;
+    private Leitura leituraSelecionada;
+    private List<Leitura> leituras = new ArrayList<>();
 
     public LeituraBean() {
         this.leitura = new Leitura();
-        this.leituraDAO = new LeituraDAO();
-        this.listaLeituras = new ArrayList<>();
     }
-    
-     @PostConstruct
+
+    @PostConstruct
     public void inicializar() {
-        
+        carregarLeituras();
     }
 
-    public String save() throws SQLException {
-        boolean sucesso;
-        FacesContext context = FacesContext.getCurrentInstance();
-
-        if (leitura.getIdLeitura() == null) {
-            sucesso = leituraDAO.save(leitura);
-            if (sucesso) {
-                context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Sucesso", "Empréstimo registado com sucesso!"));
+    public void carregarLeituras() {
+        try {
+            this.leituras = leituraDAO.findAll();
+            if (this.leituras == null) {
+                this.leituras = new ArrayList<>();
             }
-        } else {
-            sucesso = leituraDAO.update(leitura);
-            if (sucesso) {
-                context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Sucesso", "Dados do empréstimo atualizados!"));
+        } catch (Exception e) {
+            addMensagem(FacesMessage.SEVERITY_ERROR, "Erro", "Não foi possível listar o histórico de leituras: " + e.getMessage());
+            this.leituras = new ArrayList<>();
+        }
+    }
+
+    public void salvar() {
+        if (this.leitura == null) return;
+
+        try {
+            boolean sucesso;
+            if (this.leitura.getIdLeitura() == null) {
+                sucesso = leituraDAO.save(this.leitura);
+                if (sucesso) {
+                    addMensagem(FacesMessage.SEVERITY_INFO, "Sucesso", "Fluxo de leitura iniciado com sucesso!");
+                }
+            } else {
+                sucesso = leituraDAO.update(this.leitura);
+                if (sucesso) {
+                    addMensagem(FacesMessage.SEVERITY_INFO, "Sucesso", "Dados de leitura atualizados com sucesso!");
+                }
             }
-        }
 
-        if (sucesso) {
-            limpar();
-            recarregarLista();
-        } else {
-            context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Erro", "Não foi possível gravar a operação."));
-        }
-        return null;
-    }
-
-    public void editar(Leitura l) {
-        this.leitura = l;
-    }
-
-    public void devolver(int idLeitura) throws SQLException {
-        FacesContext context = FacesContext.getCurrentInstance();
-        if (leituraDAO.updateStatus("Devolvido", idLeitura)) {
-            context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Devolvido", "Livro devolvido com sucesso!"));
-            recarregarLista();
-            if (leitura.getIdLeitura() != null && leitura.getIdLeitura() == idLeitura) {
+            if (sucesso) {
                 limpar();
+                carregarLeituras();
+            } else {
+                addMensagem(FacesMessage.SEVERITY_ERROR, "Erro", "Não foi possível processar a operação.");
             }
+        } catch (Exception e) {
+            addMensagem(FacesMessage.SEVERITY_ERROR, "Erro Fatal", "Falha de processamento: " + e.getMessage());
         }
     }
 
-    public void delete(int idLeitura) throws SQLException {
-        FacesContext context = FacesContext.getCurrentInstance();
-        if (leituraDAO.delete(idLeitura)) {
-            context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Eliminado", "Registo de leitura removido!"));
-            recarregarLista();
+    public void eliminar() {
+        if (leituraSelecionada == null || leituraSelecionada.getIdLeitura() == null) {
+            addMensagem(FacesMessage.SEVERITY_WARN, "Aviso", "Selecione um registo de leitura na tabela para eliminar.");
+            return;
         }
+
+        try {
+            if (leituraDAO.delete(leituraSelecionada.getIdLeitura())) {
+                addMensagem(FacesMessage.SEVERITY_INFO, "Sucesso", "Registo de leitura removido.");
+                this.leituras.remove(leituraSelecionada);
+                this.leituraSelecionada = null;
+            } else {
+                addMensagem(FacesMessage.SEVERITY_ERROR, "Erro", "Não foi possível remover o registo.");
+            }
+        } catch (Exception e) {
+            addMensagem(FacesMessage.SEVERITY_ERROR, "Erro Fatal", "Falha ao eliminar: " + e.getMessage());
+        }
+    }
+
+    public String prepararEdicao() {
+        if (leituraSelecionada == null) {
+            addMensagem(FacesMessage.SEVERITY_WARN, "Aviso", "Selecione uma leitura para modificar ou efetuar devolução.");
+            return null;
+        }
+        this.leitura = this.leituraSelecionada;
+        return "/leitura/cadastro_leitura?faces-redirect=true";
     }
 
     public void limpar() {
         this.leitura = new Leitura();
+        this.leituraSelecionada = null;
     }
 
-    private void recarregarLista() {
-        this.listaLeituras = null;
+    public void addMensagem(FacesMessage.Severity severidade, String resumo, String detalhe) {
+        FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(severidade, resumo, detalhe));
     }
 
-   
-    public Leitura getLeitura() {
-        return leitura;
-    }
-
-    public void setLeitura(Leitura leitura) {
-        this.leitura = leitura;
-    }
-
-    public List<Leitura> getListaLeituras() throws SQLException {
-        if (listaLeituras == null || listaLeituras.isEmpty()) {
-            listaLeituras = leituraDAO.listarTudo();
-        }
-        return listaLeituras;
-    }
-
-    public void setListaLeituras(List<Leitura> listaLeituras) {
-        this.listaLeituras = listaLeituras;
-    }
+    public Leitura getLeitura() { return leitura; }
+    public void setLeitura(Leitura leitura) { this.leitura = leitura; }
+    public Leitura getLeituraSelecionada() { return leituraSelecionada; }
+    public void setLeituraSelecionada(Leitura leituraSelecionada) { this.leituraSelecionada = leituraSelecionada; }
+    public List<Leitura> getLeituras() { return leituras; }
+    public void setLeituras(List<Leitura> leituras) { this.leituras = leituras; }
 }

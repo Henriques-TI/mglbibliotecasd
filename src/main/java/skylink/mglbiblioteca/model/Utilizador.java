@@ -79,6 +79,8 @@ public class Utilizador implements Serializable {
         this.dataCadastro = dataCadastro;
     }
 
+   
+
     @Override
     public int hashCode() {
         int hash = 5;

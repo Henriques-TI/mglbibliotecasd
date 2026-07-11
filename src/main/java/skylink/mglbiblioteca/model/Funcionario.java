@@ -1,6 +1,7 @@
 package skylink.mglbiblioteca.model;
 
 import java.io.Serializable;
+import java.util.Date;
 import java.util.Objects;
 
 /**
@@ -15,18 +16,25 @@ public class Funcionario implements Serializable {
     private String cargo;
     private String email;
     private String telefone;
+    private String usuario;
+    private String senhaHash;
+    private PerfilFuncionario perfil;
+    private Boolean ativo;
+    private Date dataRegsito;
 
     public Funcionario() {
+        this.perfil = PerfilFuncionario.Atendente;
+        this.ativo = Boolean.TRUE;
     }
 
     public Funcionario(Integer idFuncionario, String nome, String cargo, String email, String telefone) {
+        this();
         this.idFuncionario = idFuncionario;
         this.nome = nome;
         this.cargo = cargo;
         this.email = email;
         this.telefone = telefone;
     }
-
 
     public Integer getIdFuncionario() {
         return idFuncionario;
@@ -68,14 +76,53 @@ public class Funcionario implements Serializable {
         this.telefone = telefone;
     }
 
+    public String getUsuario() {
+        return usuario;
+    }
+
+    public void setUsuario(String usuario) {
+        this.usuario = usuario;
+    }
+
+    public String getSenhaHash() {
+        return senhaHash;
+    }
+
+    public void setSenhaHash(String senhaHash) {
+        this.senhaHash = senhaHash;
+    }
+
+    public PerfilFuncionario getPerfil() {
+        return perfil;
+    }
+
+    public void setPerfil(PerfilFuncionario perfil) {
+        this.perfil = perfil;
+    }
+
+    public Boolean getAtivo() {
+        return ativo;
+    }
+
+    public void setAtivo(Boolean ativo) {
+        this.ativo = ativo;
+    }
+
+    public Date getDataRegsito() {
+        return dataRegsito;
+    }
+
+    public void setDataRegsito(Date dataRegsito) {
+        this.dataRegsito = dataRegsito;
+    }
+
+  
+
     @Override
     public int hashCode() {
         int hash = 5;
         hash = 41 * hash + Objects.hashCode(this.idFuncionario);
         hash = 41 * hash + Objects.hashCode(this.nome);
-        hash = 41 * hash + Objects.hashCode(this.cargo);
-        hash = 41 * hash + Objects.hashCode(this.email);
-        hash = 41 * hash + Objects.hashCode(this.telefone);
         return hash;
     }
 
@@ -84,30 +131,15 @@ public class Funcionario implements Serializable {
         if (this == obj) {
             return true;
         }
-        if (obj == null) {
-            return false;
-        }
-        if (getClass() != obj.getClass()) {
+        if (obj == null || getClass() != obj.getClass()) {
             return false;
         }
         final Funcionario other = (Funcionario) obj;
-        if (!Objects.equals(this.nome, other.nome)) {
-            return false;
-        }
-        if (!Objects.equals(this.cargo, other.cargo)) {
-            return false;
-        }
-        if (!Objects.equals(this.email, other.email)) {
-            return false;
-        }
-        if (!Objects.equals(this.telefone, other.telefone)) {
-            return false;
-        }
         return Objects.equals(this.idFuncionario, other.idFuncionario);
     }
 
     @Override
     public String toString() {
-        return "Funcionario{" + "idFuncionario=" + idFuncionario + ", nome=" + nome + ", cargo=" + cargo + ", email=" + email + ", telefone=" + telefone + '}';
+        return "Funcionario{" + "idFuncionario=" + idFuncionario + ", nome=" + nome + ", cargo=" + cargo + ", email=" + email + ", perfil=" + perfil + '}';
     }
 }

@@ -3,6 +3,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:ui="jakarta.faces.facelets"
       xmlns:h="jakarta.faces.html"
+      xmlns:f="jakarta.faces.core"
       xmlns:p="http://primefaces.org/ui">
 
     <body>
@@ -10,60 +11,80 @@
         <ui:composition template="./../WEB-INF/templates/template_funcionario.xhtml">
 
             <ui:define name="top">
-                Ficha do Funcionario
+                Ficha do Funcionário
             </ui:define>
-
-
 
             <ui:define name="content">
                 <h:form id="frmCadastroFuncionario"> 
                     <p:growl id="msgs" showDetail="true" life="3000"/>
 
-                    <p:panel header="#{funcionarioBean.funcionario.idFuncionario == null ? 'Registar Novo Funcionario' : 'Editar Funcionario'}" 
-                             style="max-width:800px; margin: 0 auto; margin-bottom:20px;">
+                    <p:panel header="#{funcionarioBean.funcionario.idFuncionario == null ? 'Registar Novo Funcionário' : 'Editar Funcionário'}" 
+                             style="max-width:800px; margin: 0 auto; margin-bottom:20px;" styleClass="ui-fluid">
 
                         <h:inputHidden value="#{funcionarioBean.funcionario.idFuncionario}" />
 
-                        <h:panelGrid columns="2" cellpadding="7" style="width:100%;">
+                        <h:panelGrid columns="2" cellpadding="7" style="width:100%;" columnClasses="ui-grid-col-3, ui-grid-col-9">
 
-                            <h:outputLabel value="Código do Funcionario:" for="idFuncionario" style="font-weight: bold;" rendered="#{funcionarioBean.funcionario.idFuncionario != null}" />
-                            <p:inputText id="idLivro" value="#{funcionarioBean.funcionario.idFuncionario}" readonly="true" style="width:100%" rendered="#{funcionarioBean.funcionario.idFuncionario != null}" />
+                            <h:outputLabel value="Código do Funcionário:" for="idFuncionario" style="font-weight: bold;" rendered="#{funcionarioBean.funcionario.idFuncionario != null}" />
+                            <p:inputText id="idFuncionario" value="#{funcionarioBean.funcionario.idFuncionario}" readonly="true" rendered="#{funcionarioBean.funcionario.idFuncionario != null}" />
 
-                            <h:outputLabel value="Nome do Funcionario:" for="nome" style="font-weight: bold;" />
-                            <p:inputText id="titulo" value="#{funcionarioBean.funcionario.nome}" 
-                                         required="true" requiredMessage="O nome do funcionario é obrigatório" style="width:100%"/>
+                            <h:outputLabel value="Nome do Funcionário:" for="nome" style="font-weight: bold;" />
+                            <p:inputText id="nome" value="#{funcionarioBean.funcionario.nome}" 
+                                         required="true" requiredMessage="O nome do funcionário é obrigatório" />
 
-                            <h:outputLabel value="Cargo" for="cargo" style="font-weight: bold;" />
+                            <h:outputLabel value="Cargo:" for="cargo" style="font-weight: bold;" />
                             <p:inputText id="cargo" value="#{funcionarioBean.funcionario.cargo}" 
-                                         required="true" requiredMessage="O cargo é obrigatório" style="width:100%"/>
+                                         required="true" requiredMessage="O cargo é obrigatório" />
 
                             <h:outputLabel value="Email:" for="email" style="font-weight: bold;" />
                             <p:inputText id="email" value="#{funcionarioBean.funcionario.email}" 
-                                         required="true" requiredMessage="O email é obrigatória" style="width:100%"/>
+                                         required="true" requiredMessage="O email é obrigatório" />
 
-                            <h:outputLabel value="Número do Telefone" for="telefone" style="font-weight: bold;" />
+                            <h:outputLabel value="Número do Telefone:" for="telefone" style="font-weight: bold;" />
                             <p:inputMask id="telefone" 
                                          value="#{funcionarioBean.funcionario.telefone}" 
-                                         mask="(+24) 999 999 999"
+                                         mask="(+244) 999 999 999"
                                          required="true"
                                          requiredMessage="Telefone é obrigatório" />
+
+                            <h:outputLabel value="Nome de Usuário (Login):" for="usuario" style="font-weight: bold;" />
+                            <p:inputText id="usuario" value="#{funcionarioBean.funcionario.usuario}" 
+                                         required="true" requiredMessage="O usuário de login é obrigatório" />
+
+                            <h:outputLabel value="Senha de Acesso:" for="senha" style="font-weight: bold;" />
+                            <p:password id="senha" value="#{funcionarioBean.funcionario.senhaHash}" 
+                                        required="#{funcionarioBean.funcionario.idFuncionario == null}" 
+                                        requiredMessage="A senha é obrigatória para novos registos"
+                                        toggleMask="true" redisplay="true" />
+
+                            <h:outputLabel value="Perfil de Acesso:" for="perfil" style="font-weight: bold;" />
+                            <p:selectOneMenu id="perfil" value="#{funcionarioBean.funcionario.perfil}" required="true" requiredMessage="Selecione um perfil">
+                                <f:selectItem itemLabel="Selecione..." itemValue="" noSelectionOption="true" />
+                                <f:selectItem itemLabel="Administrador" itemValue="Admin" />
+                                <f:selectItem itemLabel="Bibliotecário" itemValue="Bibliotecario" />
+                                <f:selectItem itemLabel="Atendente" itemValue="Atendente" />
+                            </p:selectOneMenu>
+
+                            <h:outputLabel value="Estado do Registo:" for="ativo" style="font-weight: bold;" />
+                            <p:selectBooleanButton id="ativo" value="#{funcionarioBean.funcionario.ativo}" 
+                                                   onLabel="Ativo" offLabel="Inativo" 
+                                                   onIcon="pi pi-check" offIcon="pi pi-times" 
+                                                   style="width:150px" />
+                                                   
                         </h:panelGrid>
-                        <p:divider />
+                        
+                        <p:divider style="margin-top:20px; margin-bottom:20px;" />
 
-                        <div style="text-align: center; margin-top: 15px;">
-                            <p:commandButton value="Guardar Funcionario" action="#{funcionarioBean.salvar}" 
-                                             update="frmCadastroFuncionario" icon="pi pi-save" 
-                                             styleClass="ui-button-success" style="margin-right: 10px;" />
+                        <div style="text-align: center;">
+                            <p:commandButton value="Guardar Funcionário" action="#{funcionarioBean.salvar}" 
+                                             update="@form" icon="pi pi-save" 
+                                             styleClass="ui-button-success" style="margin-right: 10px; width: auto;" />
 
-                            <p:commandButton value="Limpar Novo" action="#{funcionarioBean.limparPesquisa}" 
-                                             update="frmCadastroFuncionario" icon="pi pi-refresh" process="@this" 
-                                             styleClass="ui-button-secondary" />
+                            <p:commandButton value="Limpar Formulário" action="#{funcionarioBean.limparPesquisa}" 
+                                             update="@form" icon="pi pi-refresh" process="@this" 
+                                             styleClass="ui-button-secondary" style="width: auto;" />
                         </div>
                     </p:panel>
-                    <p:confirmDialog global="true" showEffect="fade" hideEffect="fade" responsive="true" width="350">
-                        <p:commandButton value="Não" type="button" styleClass="ui-confirmdialog-no ui-button-flat"/>
-                        <p:commandButton value="Sim" type="button" styleClass="ui-confirmdialog-yes ui-button-danger" />
-                    </p:confirmDialog>
                 </h:form>
             </ui:define>
 

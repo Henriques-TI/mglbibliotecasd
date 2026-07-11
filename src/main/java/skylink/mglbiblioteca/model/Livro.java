@@ -1,10 +1,13 @@
 package skylink.mglbiblioteca.model;
 
+
 import java.io.Serializable;
+import java.util.Date;
 import java.util.Objects;
 
 /**
- * @Henriques
+ *
+ * @author Henriques
  */
 public class Livro implements Serializable {
 
@@ -13,26 +16,18 @@ public class Livro implements Serializable {
     private Integer idLivro;
     private String titulo;
     private String autor;
+    private String isbn;
     private String editora;
     private Integer anoPublicacao;
     private CategoriaLivro categoriaLivro; 
-    private Prateleira prateleira;       
+    private Prateleira prateleira;   
+    private Integer quantidadeTotal;
     private Integer quantidadeDisponivel;
+    private Date dataRegisto;
 
     public Livro() {
         this.categoriaLivro = new CategoriaLivro();
         this.prateleira = new Prateleira();
-    }
-
-    public Livro(Integer idLivro, String titulo, String autor, String editora, Integer anoPublicacao, CategoriaLivro categoriaLivro, Prateleira prateleira, Integer quantidadeDisponivel) {
-        this.idLivro = idLivro;
-        this.titulo = titulo;
-        this.autor = autor;
-        this.editora = editora;
-        this.anoPublicacao = anoPublicacao;
-        this.categoriaLivro = categoriaLivro;
-        this.prateleira = prateleira;
-        this.quantidadeDisponivel = quantidadeDisponivel;
     }
 
     public Integer getIdLivro() {
@@ -57,6 +52,14 @@ public class Livro implements Serializable {
 
     public void setAutor(String autor) {
         this.autor = autor;
+    }
+
+    public String getIsbn() {
+        return isbn;
+    }
+
+    public void setIsbn(String isbn) {
+        this.isbn = isbn;
     }
 
     public String getEditora() {
@@ -91,6 +94,14 @@ public class Livro implements Serializable {
         this.prateleira = prateleira;
     }
 
+    public Integer getQuantidadeTotal() {
+        return quantidadeTotal;
+    }
+
+    public void setQuantidadeTotal(Integer quantidadeTotal) {
+        this.quantidadeTotal = quantidadeTotal;
+    }
+
     public Integer getQuantidadeDisponivel() {
         return quantidadeDisponivel;
     }
@@ -99,18 +110,38 @@ public class Livro implements Serializable {
         this.quantidadeDisponivel = quantidadeDisponivel;
     }
 
+    public Date getDataRegisto() {
+        return dataRegisto;
+    }
+
+    public void setDataRegisto(Date dataRegisto) {
+        this.dataRegisto = dataRegisto;
+    }
+
     @Override
     public int hashCode() {
-        int hash = 5;
-        hash = 59 * hash + Objects.hashCode(this.idLivro);
+        int hash = 7;
+        hash = 71 * hash + Objects.hashCode(this.idLivro);
         return hash;
     }
 
     @Override
     public boolean equals(Object obj) {
-        if (this == obj) return true;
-        if (obj == null || getClass() != obj.getClass()) return false;
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
         final Livro other = (Livro) obj;
         return Objects.equals(this.idLivro, other.idLivro);
+    }
+
+    @Override
+    public String toString() {
+        return "Livro{" + "titulo=" + titulo + '}';
     }
 }

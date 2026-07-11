@@ -1,30 +1,33 @@
-package mglbiblioteca.dao;
+package skylink.mglbiblioteca.dao;
 
 import java.io.Serializable;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
-import skylink.mglbiblioteca.model.Prateleira;
 import skylink.mglbiblioteca.bdutil.ConnectionDB;
+import skylink.mglbiblioteca.model.Prateleira;
 
 /**
- * @Henriques
+ * @author Henriques
  */
 public class PrateleiraDAO implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    private static final String INSERT = "INSERT INTO prateleira (posicao_prateleira, classificacao) VALUES (?, ?)";
-    private static final String UPDATE = "UPDATE prateleira SET posicao_prateleira = ?, classificacao = ? WHERE id_prateleira = ?";
-    private static final String DELETE = "DELETE FROM prateleira WHERE id_prateleira = ?";
-    private static final String SELECT_ALL = "SELECT * FROM prateleira";
-    private static final String SELECT_BY_ID = "SELECT * FROM prateleira WHERE id_prateleira = ?";
-    private static final String SELECT_BY_POSICAO = "SELECT * FROM prateleira WHERE posicao_prateleira LIKE ?";
+    private static final String INSERT = "INSERT INTO prateleiras (posicao_prateleira, classificacao) VALUES (?, ?)";
+    private static final String UPDATE = "UPDATE prateleiras SET posicao_prateleira = ?, classificacao = ? WHERE id_prateleira = ?";
+    private static final String DELETE = "DELETE FROM prateleiras WHERE id_prateleira = ?";
+    private static final String SELECT_ALL = "SELECT * FROM prateleiras ORDER BY posicao_prateleira ASC";
+    private static final String SELECT_BY_ID = "SELECT * FROM prateleiras WHERE id_prateleira = ?";
+    private static final String SELECT_BY_POSICAO = "SELECT * FROM prateleiras WHERE posicao_prateleira LIKE ? ORDER BY posicao_prateleira ASC";
 
     public boolean save(Prateleira p) {
+        if (p == null) return false;
+
         try (Connection conn = ConnectionDB.getConnection();
              PreparedStatement ps = conn.prepareStatement(INSERT)) {
             
@@ -33,12 +36,14 @@ public class PrateleiraDAO implements Serializable {
             
             return ps.executeUpdate() > 0;
         } catch (SQLException e) {
-            e.printStackTrace();
+            System.err.println("Erro ao salvar prateleira: " + e.getMessage());
             return false;
         }
     }
 
     public boolean update(Prateleira p) {
+        if (p == null || p.getIdPrateleira() == null) return false;
+
         try (Connection conn = ConnectionDB.getConnection();
              PreparedStatement ps = conn.prepareStatement(UPDATE)) {
             
@@ -48,19 +53,21 @@ public class PrateleiraDAO implements Serializable {
             
             return ps.executeUpdate() > 0;
         } catch (SQLException e) {
-            e.printStackTrace();
+            System.err.println("Erro ao atualizar prateleira: " + e.getMessage());
             return false;
         }
     }
 
-    public boolean delete(Prateleira p) {
+    public boolean delete(Integer id) {
+        if (id == null) return false;
+
         try (Connection conn = ConnectionDB.getConnection();
              PreparedStatement ps = conn.prepareStatement(DELETE)) {
             
-            ps.setInt(1, p.getIdPrateleira());
+            ps.setInt(1, id);
             return ps.executeUpdate() > 0;
         } catch (SQLException e) {
-            e.printStackTrace();
+            System.err.println("Erro ao eliminar prateleira: " + e.getMessage());
             return false;
         }
     }
@@ -75,12 +82,14 @@ public class PrateleiraDAO implements Serializable {
                 lista.add(mapearResultSet(rs));
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            System.err.println("Erro ao listar prateleiras: " + e.getMessage());
         }
         return lista;
     }
 
     public Prateleira findById(Integer id) {
+        if (id == null) return null;
+
         try (Connection conn = ConnectionDB.getConnection();
              PreparedStatement ps = conn.prepareStatement(SELECT_BY_ID)) {
 
@@ -91,24 +100,32 @@ public class PrateleiraDAO implements Serializable {
                 }
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            System.err.println("Erro ao buscar prateleira por ID: " + e.getMessage());
         }
         return null;
     }
 
+    /**
+     * Método adicionado para corrigir o vínculo com o PrateleiraBean.
+     * Permite pesquisar prateleiras por correspondência parcial de texto (ex: "A" traz "A1", "A2", etc).
+     */
     public List<Prateleira> buscarPorPosicao(String posicao) {
         List<Prateleira> lista = new ArrayList<>();
+        if (posicao == null || posicao.trim().isEmpty()) return lista;
+
         try (Connection conn = ConnectionDB.getConnection();
              PreparedStatement ps = conn.prepareStatement(SELECT_BY_POSICAO)) {
 
-            ps.setString(1, "%" + posicao + "%");
+            // Define o parâmetro com coringas % para pesquisa com o operador LIKE
+            ps.setString(1, "%" + posicao.trim() + "%");
+            
             try (ResultSet rs = ps.executeQuery()) {
                 while (rs.next()) {
                     lista.add(mapearResultSet(rs));
                 }
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            System.err.println("Erro ao buscar prateleiras por posição: " + e.getMessage());
         }
         return lista;
     }
@@ -118,6 +135,12 @@ public class PrateleiraDAO implements Serializable {
         p.setIdPrateleira(rs.getInt("id_prateleira"));
         p.setPosicaoPrateleira(rs.getString("posicao_prateleira"));
         p.setClassificacao(rs.getString("classificacao"));
+        
+        Timestamp timestamp = rs.getTimestamp("data_registo");
+        if (timestamp != null) {
+            p.setDataRegisto(new java.util.Date(timestamp.getTime()));
+        }
+        
         return p;
     }
 }

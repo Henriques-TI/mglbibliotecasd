@@ -2,6 +2,7 @@ package skylink.mglbiblioteca.model;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.util.Date;
 import java.util.Objects;
 
 /**
@@ -15,7 +16,8 @@ public class Sala implements Serializable {
     private String nomeSala;
     private Integer capacidade;
     private BigDecimal precoHora;
-    private String status; 
+    private String status;
+    private Date dataRegisto;
 
     public Sala() {
         this.status = "Disponível";
@@ -68,6 +70,15 @@ public class Sala implements Serializable {
     public void setStatus(String status) {
         this.status = status;
     }
+
+    public Date getDataRegisto() {
+        return dataRegisto;
+    }
+
+    public void setDataRegisto(Date dataRegisto) {
+        this.dataRegisto = dataRegisto;
+    }
+
 
     @Override
     public int hashCode() {

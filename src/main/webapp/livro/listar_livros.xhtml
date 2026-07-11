@@ -11,7 +11,7 @@
 
             <ui:define name="content">
                 <f:view>
-                    
+
                     <h:form id="formPesquisa">
                         <p:growl id="growl" showDetail="true" sticky="false" life="4000" />
 
@@ -19,7 +19,7 @@
                             <p:toolbarGroup align="left">
 
                                 <p:inputText id="pesquisa"
-                                             value="#{livroBean.filtroAutor}"
+                                             value="#{livroBean.filtroTitulo}"
                                              placeholder="Pesquisar por título ou autor..."
                                              style="width: 400px;" />
 
@@ -31,7 +31,7 @@
 
                                 <p:commandButton value="Listar Todos"
                                                  icon="pi pi-list"
-                                                 action="#{livroBean.limparPesquisa}"
+                                                 action="#{livroBean.limpar()}"
                                                  update="formPesquisa:pesquisa formTabela:tabela"
                                                  styleClass="ui-button-secondary"
                                                  style="margin-left: 4px;"
@@ -62,8 +62,8 @@
                                 <h:outputText value="#{liv.idLivro}" />
                             </p:column>
 
-                            <p:column headerText="Título do Livro"width="80"/>
-                                <h:outputText value="#{liv.titulo}" />
+                            <p:column headerText="Título do Livro"width="80" />
+                            <h:outputText value="#{liv.titulo}" />
                             </p:column>
 
                             <p:column headerText="Autor" width="120">
@@ -75,7 +75,7 @@
                             </p:column>
 
                             <p:column headerText="Categoria">
-                                <h:outputText value="#{liv.categoriaLivro.descricaoCategoriaLivro}" />
+                                <h:outputText value="#{liv.categoriaLivro.descricao}" />
                             </p:column>
 
                             <p:column headerText="Prateleira">
@@ -86,21 +86,15 @@
                                 <h:outputText value="#{liv.quantidadeDisponivel}" />
                             </p:column>
 
-                            <p:column headerText="Operações" width="150" style="text-align:center;">
-                                <p:commandButton value="Editar"
-                                                 action="#{livroBean.editar}"
-                                                 styleClass="ui-button-warning"
-                                                 style="margin-right: 5px;">
-                                    <f:setPropertyActionListener value="#{liv}" target="#{livroBean.livroSelecionado}" />
-                                </p:commandButton>
-                                
-                                <p:commandButton value="Eliminar"
-                                                 action="#{livroBean.excluir}"
-                                                 update="formTabela:tabela formPesquisa:growl"
-                                                 styleClass="ui-button-danger">
-                                    <f:setPropertyActionListener value="#{liv}" target="#{livroBean.livroSelecionado}" />
-                                    <p:confirm header="Confirmação" message="Deseja mesmo eliminar este livro?" icon="pi pi-exclamation-triangle" />
-                                </p:commandButton>
+
+
+                            <p:commandButton value="Eliminar"
+                                             action="#{livroBean.excluir}"
+                                             update="formTabela:tabela formPesquisa:growl"
+                                             styleClass="ui-button-danger">
+                                <f:setPropertyActionListener value="#{liv}" target="#{livroBean.livroSelecionado}" />
+                                <p:confirm header="Confirmação" message="Deseja mesmo eliminar este livro?" icon="pi pi-exclamation-triangle" />
+                            </p:commandButton>
                             </p:column>
 
                         </p:dataTable>

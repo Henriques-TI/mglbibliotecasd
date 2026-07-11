@@ -11,25 +11,25 @@
         <ui:composition template="./../WEB-INF/templates/template_computador.xhtml">
             <ui:define name="content">
                 <h:form id="frmComputador">
-                    <p:growl id="msgs" showDetail="true" life="1000"/>
+                    <p:growl id="msgs" showDetail="true" life="3000"/>
 
                     <p:panel header="#{computadorBean.computador.idEquipamento == null ? 'Cadastro de Novo Equipamento' : 'Editar Equipamento'}" 
-                             style="max-width:600px; margin-bottom:20px;">
+                             style="max-width:600px; margin: 0 auto; margin-bottom:20px;">
                         
                         <h:inputHidden value="#{computadorBean.computador.idEquipamento}" />
 
                         <h:panelGrid columns="2" cellpadding="7" style="width:100%;">
 
-                            <h:outputLabel value="Referência do Equipamento (Etiqueta):" for="ref" />
+                            <h:outputLabel value="Referência do Equipamento (Etiqueta):" for="ref" style="font-weight: bold;" />
                             <p:inputText id="ref" value="#{computadorBean.computador.refEquipamento}" 
                                          required="true" requiredMessage="A referência é obrigatória"
                                          style="width:100%" />
 
-                            <h:outputLabel value="Localização (Sala / Setor):" for="localizacao"/>
+                            <h:outputLabel value="Localização (Sala / Setor):" for="localizacao" style="font-weight: bold;"/>
                             <p:inputText id="localizacao" value="#{computadorBean.computador.localizacao}" 
                                          style="width:100%" />
 
-                            <h:outputLabel value="Status Inicial:" for="status"/>
+                            <h:outputLabel value="Status Inicial:" for="status" style="font-weight: bold;"/>
                             <p:selectOneMenu id="status" value="#{computadorBean.computador.status}" style="width:100%;">
                                 <f:selectItem itemLabel="Disponível" itemValue="Disponível" />
                                 <f:selectItem itemLabel="Em Uso" itemValue="Em Uso" />
@@ -40,8 +40,8 @@
 
                         <p:divider />
 
-                        <div style="text-align: center; margin-top: 10px;">
-                            <p:commandButton value="Guardar Equipamento" action="#{computadorBean.save}" 
+                        <div style="text-align: center; margin-top: 15px;">
+                            <p:commandButton value="Guardar Equipamento" action="#{computadorBean.save()}" 
                                              update="frmComputador" icon="pi pi-save" 
                                              styleClass="ui-button-success" style="margin-right: 10px;" />
 

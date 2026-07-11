@@ -16,7 +16,6 @@ public class ComputadorDAO implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    // Corrigido o nome da tabela para 'computadores' em minúsculo em todas as queries
     private static final String INSERT =
             "INSERT INTO computadores (ref_equipamento, status, localizacao) VALUES (?, ?, ?)";
 
@@ -30,15 +29,17 @@ public class ComputadorDAO implements Serializable {
             "SELECT * FROM computadores WHERE id_equipamento = ?";
 
     private static final String LISTAR_TUDO =
-            "SELECT id_equipamento, ref_equipamento, status, localizacao FROM computadores ORDER BY ref_equipamento";
+            "SELECT * FROM computadores ORDER BY ref_equipamento";
 
     private static final String LISTAR_POR_STATUS =
-            "SELECT id_equipamento, ref_equipamento, status, localizacao FROM computadores WHERE status = ? ORDER BY ref_equipamento";
+            "SELECT * FROM computadores WHERE status = ? ORDER BY ref_equipamento";
 
     private static final String ATUALIZAR_STATUS = 
             "UPDATE computadores SET status = ? WHERE id_equipamento = ?";
 
     public boolean save(Computador computador) {
+        if (computador == null) return false;
+        
         try (Connection conn = ConnectionDB.getConnection(); 
              PreparedStatement ps = conn.prepareStatement(INSERT)) {
             ps.setString(1, computador.getRefEquipamento());
@@ -52,6 +53,8 @@ public class ComputadorDAO implements Serializable {
     }
 
     public boolean update(Computador computador) {
+        if (computador == null || computador.getIdEquipamento() == null) return false;
+        
         try (Connection conn = ConnectionDB.getConnection(); 
              PreparedStatement ps = conn.prepareStatement(UPDATE)) {
             ps.setString(1, computador.getRefEquipamento());
@@ -92,6 +95,8 @@ public class ComputadorDAO implements Serializable {
 
     public List<Computador> listarPorStatus(String status) {
         List<Computador> lista = new ArrayList<>();
+        if (status == null) return lista;
+        
         try (Connection conn = ConnectionDB.getConnection(); 
              PreparedStatement ps = conn.prepareStatement(LISTAR_POR_STATUS)) {
             ps.setString(1, status);
@@ -155,6 +160,8 @@ public class ComputadorDAO implements Serializable {
         c.setRefEquipamento(rs.getString("ref_equipamento"));
         c.setStatus(rs.getString("status"));
         c.setLocalizacao(rs.getString("localizacao"));
+        
+        c.setDataRegisto(rs.getTimestamp("dataRegisto"));        
         return c;
     }
 }

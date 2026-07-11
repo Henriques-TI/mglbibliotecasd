@@ -13,19 +13,20 @@ public class Pagamento implements Serializable {
     private static final long serialVersionUID = 1L;
 
     private Integer idPagamento;
-    private Integer idReferencia;          
-    private Integer idUtilizador;          
+    private Integer idServico;
+    private Integer idUtilizador;
     private BigDecimal valorPago;
-    private MetodoPagamento metodoPagamento; 
+    private MetodoPagamento metodoPagamento;
     private Date dataPagamento;
+    private Date dataRegisto;
 
     public Pagamento() {
-        this.dataPagamento = new Date(); 
+        this.dataPagamento = new Date();
     }
 
-    public Pagamento(Integer idPagamento,Integer idReferencia, Integer idUtilizador, BigDecimal valorPago, MetodoPagamento metodoPagamento, Date dataPagamento) {
+    public Pagamento(Integer idPagamento, Integer idServico, Integer idUtilizador, BigDecimal valorPago, MetodoPagamento metodoPagamento, Date dataPagamento) {
         this.idPagamento = idPagamento;
-        this.idReferencia = idReferencia;
+        this.idServico = idServico;
         this.idUtilizador = idUtilizador;
         this.valorPago = valorPago;
         this.metodoPagamento = metodoPagamento;
@@ -41,13 +42,12 @@ public class Pagamento implements Serializable {
         this.idPagamento = idPagamento;
     }
 
-   
-    public Integer getIdReferencia() {
-        return idReferencia;
+    public Integer getIdServico() {
+        return idServico;
     }
 
-    public void setIdReferencia(Integer idReferencia) {
-        this.idReferencia = idReferencia;
+    public void setIdServico(Integer idServico) {
+        this.idServico = idServico;
     }
 
     public Integer getIdUtilizador() {
@@ -82,6 +82,16 @@ public class Pagamento implements Serializable {
         this.dataPagamento = dataPagamento;
     }
 
+    public Date getDataRegisto() {
+        return dataRegisto;
+    }
+
+    public void setDataRegisto(Date dataRegisto) {
+        this.dataRegisto = dataRegisto;
+    }
+
+   
+
     @Override
     public int hashCode() {
         int hash = 3;
@@ -99,6 +109,6 @@ public class Pagamento implements Serializable {
 
     @Override
     public String toString() {
-        return "Pagamento{" + "idPagamento=" + idPagamento + ", valorPago=" + valorPago + ", dataPagamento=" + dataPagamento + '}';
+        return "Pagamento{" + "idPagamento=" + idPagamento + ", idServico=" + idServico + ", valorPago=" + valorPago + ", dataPagamento=" + dataPagamento + '}';
     }
 }

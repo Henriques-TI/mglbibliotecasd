@@ -3,49 +3,56 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:ui="jakarta.faces.facelets"
       xmlns:h="jakarta.faces.html"
-      xmlns:p="http://primefaces.org/ui"
-      xmlns:f="jakarta.faces.core">
+      xmlns:f="jakarta.faces.core"
+      xmlns:p="http://primefaces.org/ui">
 
     <body>
-
         <ui:composition template="./../WEB-INF/templates/template_categoria.xhtml">
 
             <ui:define name="content">
                 <h:form id="frmCategoria">
                     <p:growl id="msgs" showDetail="true" life="3000"/>
 
-                    <div class="ui-g">
-                        <div class="ui-g-12 ui-md-4">
-                            <p:panel header="#{categoriaLivroBean.categoriaLivro.idCategoriaLivro == null ? 'Nova Categoria Livro' : 'Editar Categoria Livro'}">
+                    <h:panelGrid columns="2" columnClasses="col-cadastro, col-listagem" style="width:100%; border:none; align-items: start;" cellpadding="10">
+
+                        <h:panelGroup style="display:block; vertical-align: top;">
+                            <p:panel header="#{categoriaLivroBean.categoriaLivro.idCategoriaLivro == null ? 'Nova Categoria' : 'Editar Categoria'}"
+                                     style="margin-top: 0px; min-width: 280px;">
 
                                 <h:inputHidden value="#{categoriaLivroBean.categoriaLivro.idCategoriaLivro}" />
 
                                 <h:panelGrid columns="1" style="width:100%;" styleClass="ui-fluid">
-                                    <p:outputLabel value="Descrição da Categoria:" for="descricao" style="font-weight: bold; margin-top: 10px;" />
+                                    <p:outputLabel value="Descrição da Categoria:" for="descricao" style="font-weight: bold; margin-bottom: 5px;" />
                                     <p:inputTextarea id="descricao" value="#{categoriaLivroBean.categoriaLivro.descricao}" 
-                                                     rows="3" autoResize="false" required="true" requiredMessage="A descrição é obrigatória."/>
+                                                     rows="4" autoResize="false" required="true" 
+                                                     requiredMessage="A descrição é obrigatória."/>
+                                    <p:message for="descricao" />
                                 </h:panelGrid>
 
-                                <p:divider />
+                                <p:divider style="margin-top: 15px; margin-bottom: 15px;" />
 
-                                <div style="text-align: center; margin-top: 10px;">
-                                    <p:commandButton value="Guardar" action="#{categoriaLivroBean.salvar}" 
-                                                     update="frmCategoria" icon="pi pi-save" 
-                                                     styleClass="ui-button-success" style="width: 100%; margin-bottom: 10px;" />
-
-                                    <p:commandButton value="Limpar Novo" action="#{categoriaLivroBean.limpar()}" 
-                                                     update="frmCategoria" icon="pi pi-refresh" process="@this"
-                                                     styleClass="ui-button-secondary" style="width: 100%;" />
+                                <div class="ui-fluid">
+                                    <div style="margin-bottom: 10px;">
+                                        <p:commandButton value="Guardar" action="#{categoriaLivroBean.salvar}" 
+                                                         update="@form" icon="pi pi-save" 
+                                                         styleClass="ui-button-success" style="width: 100%;" />
+                                    </div>
+                                    <div>
+                                        <p:commandButton value="Limpar / Novo" action="#{categoriaLivroBean.limpar}" 
+                                                         update="@form" icon="pi pi-refresh" process="@this"
+                                                         styleClass="ui-button-outlined ui-button-secondary" style="width: 100%;" />
+                                    </div>
                                 </div>
                             </p:panel>
-                        </div>
+                        </h:panelGroup>
 
-                        <div class="ui-g-12 ui-md-8">
-                            <p:panel header="Categorias Cadastradas">
-                                <p:dataTable id="tblCategorias" value="#{categoriaLivroBean.categorias}" var="cat" 
-                                             emptyMessage="Nenhuma categoria encontrada." rows="5" paginator="true" paginatorPosition="bottom">
-                                    
-                                    <p:column headerText="Código da Categoria" style="width: 50px; text-align: center;">
+                        <h:panelGroup style="display:block; vertical-align: top;">
+                            <p:panel header="Categorias Registadas" style="margin-top: 0px;">
+                                <p:dataTable id="tabelaCategorias" value="#{categoriaLivroBean.categorias}" var="cat" 
+                                             paginator="true" rows="10" emptyMessage="Nenhuma categoria encontrada."
+                                             paginatorPosition="bottom" rowHover="true">
+
+                                    <p:column headerText="ID" style="width: 80px; text-align: center;">
                                         <h:outputText value="#{cat.idCategoriaLivro}" />
                                     </p:column>
 
@@ -53,15 +60,36 @@
                                         <h:outputText value="#{cat.descricao}" />
                                     </p:column>
 
-                                   
+                                    <p:column headerText="Data de Registo" style="width: 180px; text-align: center;">
+                                        <h:outputText value="#{cat.dataRegisto}">
+                                            <f:convertDateTime pattern="dd/MM/yyyy HH:mm:ss" type="both" />
+                                        </h:outputText>
+                                    </p:column>
+
+                                    <p:column headerText="Ações" style="width: 110px; text-align: center;">
+                                        <p:commandButton icon="pi pi-pencil" title="Editar"
+                                                         process="@this" update="frmCategoria"
+                                                         styleClass="ui-button-warning ui-button-flat">
+                                            <f:setPropertyActionListener value="#{cat}" target="#{categoriaLivroBean.categoriaLivro}" />
+                                        </p:commandButton>
+
+                                        <p:commandButton icon="pi pi-trash" title="Excluir"
+                                                         action="#{categoriaLivroBean.excluir()}"
+                                                         process="@this" update="frmCategoria"
+                                                         styleClass="ui-button-danger ui-button-flat">
+                                            <p:confirm header="Confirmação" message="Deseja mesmo excluir esta categoria?" icon="pi pi-exclamation-triangle" />
+                                        </p:commandButton>
+                                    </p:column>
+
                                 </p:dataTable>
                             </p:panel>
-                        </div>
-                    </div>
+                        </h:panelGroup>
+
+                    </h:panelGrid>
+
                 </h:form>
             </ui:define>
 
         </ui:composition>
-
     </body>
 </html>

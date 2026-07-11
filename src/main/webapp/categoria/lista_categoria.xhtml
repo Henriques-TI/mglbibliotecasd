@@ -1,0 +1,39 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="jakarta.faces.facelets"
+                xmlns:h="jakarta.faces.html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="jakarta.faces.core">
+
+    <p:panel header="Categorias Cadastradas" style="margin-top: 0px;">
+        <p:dataTable id="tblCategorias" value="#{categoriaLivroBean.categorias}" var="cat" 
+                     emptyMessage="Nenhuma categoria encontrada." rows="5" paginator="true" 
+                     paginatorPosition="bottom" reflow="true">
+            
+            <p:column headerText="CÓDIGO" style="width: 15%; text-align: center; font-weight: bold;">
+                <h:outputText value="#{cat.idCategoriaLivro}" />
+            </p:column>
+
+            <p:column headerText="DESCRIÇÃO" style="font-weight: bold;">
+                <h:outputText value="#{cat.descricao}" />
+            </p:column>
+
+            <p:column headerText="AÇÕES" style="width: 20%; text-align: center; font-weight: bold;">
+                <p:commandButton icon="pi pi-pencil" update="frmCategoria" process="@this"
+                                 styleClass="ui-button-success ui-button-rounded ui-button-text" 
+                                 style="margin-right: 5px;">
+                    <f:setPropertyActionListener value="#{cat}" target="#{categoriaLivroBean.categoriaLivro}" />
+                </p:commandButton>
+                
+                <p:commandButton icon="pi pi-trash" action="#{categoriaLivroBean.excluir}"
+                                 update="frmCategoria" process="@this"
+                                 styleClass="ui-button-danger ui-button-rounded ui-button-text">
+                    <f:setPropertyActionListener value="#{cat}" target="#{categoriaLivroBean.categoriaLivro}" />
+                    <p:confirm header="Confirmação" message="Tem certeza que deseja eliminar esta categoria?" icon="pi pi-exclamation-triangle" />
+                </p:commandButton>
+            </p:column>
+            
+        </p:dataTable>
+    </p:panel>
+
+</ui:composition>

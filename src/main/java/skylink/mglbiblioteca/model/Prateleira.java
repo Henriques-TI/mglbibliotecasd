@@ -1,6 +1,7 @@
 package skylink.mglbiblioteca.model;
 
 import java.io.Serializable;
+import java.util.Date;
 import java.util.Objects;
 
 /**
@@ -13,6 +14,7 @@ public class Prateleira implements Serializable {
     private Integer idPrateleira;
     private String posicaoPrateleira;
     private String classificacao;
+    private Date dataRegisto;
 
     public Prateleira() {
     }
@@ -47,6 +49,16 @@ public class Prateleira implements Serializable {
     public void setClassificacao(String classificacao) {
         this.classificacao = classificacao;
     }
+
+    public Date getDataRegisto() {
+        return dataRegisto;
+    }
+
+    public void setDataRegisto(Date dataRegisto) {
+        this.dataRegisto = dataRegisto;
+    }
+
+    
 
     @Override
     public int hashCode() {

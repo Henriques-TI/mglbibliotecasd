@@ -44,8 +44,8 @@
                                              required="true" requiredMessage="Selecione uma categoria"
                                              converter="omnifaces.SelectItemsConverter" style="width:100%;">
                                 <f:selectItem itemLabel="-- Selecione uma Categoria --" itemValue="" noSelectionOption="true" />
-                                <f:selectItems value="#{livroBean.categorias}" var="cat" 
-                                               itemLabel="#{cat.descricaoCategoriaLivro}" itemValue="#{cat}" />
+                                <f:selectItems value="#{livroBean.categoriasLivro}" var="cat" 
+                                               itemLabel="#{cat.descricao}" itemValue="#{cat}" />
                             </p:selectOneMenu>
 
                             <h:outputLabel value="Localização (Prateleira):" for="prateleira" style="font-weight: bold;" />
@@ -57,9 +57,13 @@
                                                itemLabel="#{p.posicaoPrateleira}" itemValue="#{p}" />
                             </p:selectOneMenu>
 
-                            <h:outputLabel value="Quantidade de Exemplares:" for="qtd" style="font-weight: bold;" />
-                            <p:inputNumber id="qtd" value="#{livroBean.livro.quantidadeDisponivel}" decimalPlaces="0" style="width:100%"/>
+                            <h:outputLabel value="Quantidade Total no Acervo:" for="qtdTotal" style="font-weight: bold;" />
+                            <p:inputNumber id="qtdTotal" value="#{livroBean.livro.quantidadeTotal}" 
+                                           required="true" requiredMessage="A quantidade total é obrigatória" decimalPlaces="0" style="width:100%"/>
 
+                            <h:outputLabel value="Quantidade Disponível para Empréstimo:" for="qtd" style="font-weight: bold;" />
+                            <p:inputNumber id="qtd" value="#{livroBean.livro.quantidadeDisponivel}" 
+                                           required="true" requiredMessage="A quantidade disponível é obrigatória" decimalPlaces="0" style="width:100%"/>
                         </h:panelGrid>
 
                         <p:divider />
@@ -69,7 +73,7 @@
                                              update="frmCadastroLivro" icon="pi pi-save" 
                                              styleClass="ui-button-success" style="margin-right: 10px;" />
 
-                            <p:commandButton value="Limpar Novo" action="#{livroBean.limparPesquisa}" 
+                            <p:commandButton value="Limpar Novo" action="#{livroBean.limpar()}" 
                                              update="frmCadastroLivro" icon="pi pi-refresh" process="@this" 
                                              styleClass="ui-button-secondary" />
                         </div>

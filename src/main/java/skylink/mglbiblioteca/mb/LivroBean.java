@@ -4,131 +4,151 @@ import jakarta.annotation.PostConstruct;
 import jakarta.faces.application.FacesMessage;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.view.ViewScoped;
-import jakarta.inject.Inject;
 import jakarta.inject.Named;
 import java.io.Serializable;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-import mglbiblioteca.dao.PrateleiraDAO;
-import skylink.mglbiblioteca.DAO.CategoriaLivroDAO;
-import skylink.mglbiblioteca.DAO.LivroDAO;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import skylink.mglbiblioteca.dao.CategoriaLivroDAO;
+import skylink.mglbiblioteca.dao.LivroDAO;
+import skylink.mglbiblioteca.dao.PrateleiraDAO;
 import skylink.mglbiblioteca.model.Livro;
 import skylink.mglbiblioteca.model.CategoriaLivro;
 import skylink.mglbiblioteca.model.Prateleira;
 
 /**
- * @Henriques
+ * @author Henriques
  */
 @Named(value = "livroBean")
 @ViewScoped
 public class LivroBean implements Serializable {
 
+    private static final Logger LOGGER = Logger.getLogger(LivroBean.class.getName());
     private static final long serialVersionUID = 1L;
-
-    @Inject
-    private LivroDAO livroDAO;
-
-    @Inject
-    private CategoriaLivroDAO categoriaLivroDAO;
-
-    @Inject
-    private PrateleiraDAO prateleiraDAO;
 
     private Livro livro;
     private Livro livroSelecionado;
-    private List<Livro> livros = new ArrayList<>();
-    private List<CategoriaLivro> categorias = new ArrayList<>();
-    private List<Prateleira> prateleiras = new ArrayList<>();
+    private List<Livro> livros;
+    private List<CategoriaLivro> categoriasLivro;
+    private List<Prateleira> prateleiras;
+
+    private final LivroDAO livroDAO;
+    private final CategoriaLivroDAO categoriaLivroDAO;
+    private final PrateleiraDAO prateleiraDAO;
+
     private String filtroTitulo;
 
     public LivroBean() {
-        this.livro = new Livro();
+        livroDAO = new LivroDAO();
+        categoriaLivroDAO = new CategoriaLivroDAO();
+        prateleiraDAO = new PrateleiraDAO();
+        livro = new Livro();
+        livros = new ArrayList<>();
+        categoriasLivro = new ArrayList<>();
+        prateleiras = new ArrayList<>();
     }
 
     @PostConstruct
     public void inicializar() {
         try {
-            carregarLivros();
-            carregarCombos();
-        } catch (Exception e) {
-            addMensagem(FacesMessage.SEVERITY_ERROR, "Erro", "Erro ao carregar dados da página: " + e.getMessage());
+            prateleiras = prateleiraDAO.findAll();
+            categoriasLivro = categoriaLivroDAO.findAll();
+            livros = livroDAO.findAll();
+        } catch (SQLException e) {
+            LOGGER.log(Level.SEVERE, "Erro ao inicializar dados no LivroBean", e);
+            addMensagem(FacesMessage.SEVERITY_ERROR, "Erro de Sistema", "Não foi possível carregar os dados iniciais do banco de dados.");
         }
     }
 
-    public void carregarLivros() {
-        this.livros = livroDAO.findAll();
+    public void limpar() {
+        this.livro = new Livro();
     }
 
-    private void carregarCombos() {
-        this.categorias = categoriaLivroDAO.findAll();
-        this.prateleiras = prateleiraDAO.findAll();
+    private void carregarCombos() throws SQLException {
+        categoriasLivro = categoriaLivroDAO.findAll();
+        prateleiras = prateleiraDAO.findAll();
     }
 
-    public void salvar() {
-        boolean sucesso;
-        
-        if (livro.getCategoriaLivro() != null && livro.getCategoriaLivro().getIdCategoriaLivro() == null) {
-            livro.setCategoriaLivro(null);
-        }
-        if (livro.getPrateleira() != null && livro.getPrateleira().getIdPrateleira() == null) {
-            livro.setPrateleira(null);
-        }
-
-        if (livro.getIdLivro() == null) {
-            sucesso = livroDAO.save(livro);
-            if (sucesso) addMensagem(FacesMessage.SEVERITY_INFO, "Sucesso", "Livro registrado com sucesso!");
+    public void pesquisar() {
+        if (filtroTitulo != null && !filtroTitulo.trim().isEmpty()) {
+            livros = livroDAO.buscarPorTitulo(filtroTitulo.trim());
+            if (livros.isEmpty()) {
+                addMensagem(FacesMessage.SEVERITY_INFO, "Informação", "Nenhum livro encontrado com esse título.");
+            }
         } else {
-            sucesso = livroDAO.update(livro);
-            if (sucesso) addMensagem(FacesMessage.SEVERITY_INFO, "Sucesso", "Livro atualizado com sucesso!");
+            addMensagem(FacesMessage.SEVERITY_WARN, "Atenção", "Informe um título para pesquisar.");
+            livros = new ArrayList<>();
         }
+    }
 
-        if (sucesso) {
-            limpar();
-            carregarLivros();
+    public void limparPesquisa() {
+        this.filtroTitulo = null;
+        this.livros = new ArrayList<>();
+        this.livroSelecionado = null;
+    }
+
+    public String salvar() {
+        FacesContext.getCurrentInstance().getExternalContext().getFlash().setKeepMessages(true);
+
+        if (this.livro.getIdLivro() == null) {
+            boolean sucesso = livroDAO.save(livro);
+            if (sucesso) {
+                addMensagem(FacesMessage.SEVERITY_INFO, "Sucesso", "Livro registado com sucesso!");
+                return "cadastro_livros.xhtml?faces-redirect=true";
+            } else {
+                addMensagem(FacesMessage.SEVERITY_ERROR, "Erro", "Erro ao processar operação no banco de dados.");
+                return null;
+            }
         } else {
-            addMensagem(FacesMessage.SEVERITY_ERROR, "Erro", "Não foi possível processar a operação no acervo.");
+            boolean sucesso = livroDAO.update(livro);
+            if (sucesso) {
+                addMensagem(FacesMessage.SEVERITY_INFO, "Sucesso", "Livro actualizado com sucesso!");
+                return "cadastro_livros.xhtml?faces-redirect=true";
+            } else {
+                addMensagem(FacesMessage.SEVERITY_ERROR, "Erro", "Erro ao processar operação no banco de dados.");
+                return null;
+            }
         }
     }
 
     public void excluir() {
         if (livroSelecionado == null) {
-            addMensagem(FacesMessage.SEVERITY_WARN, "Aviso", "Por favor, selecione um livro para remover.");
+            addMensagem(FacesMessage.SEVERITY_WARN, "Aviso", "Selecione um livro na tabela.");
             return;
         }
 
-        if (livroDAO.delete(livroSelecionado.getIdLivro())) {
-            addMensagem(FacesMessage.SEVERITY_INFO, "Sucesso", "Livro removido com sucesso!");
-            carregarLivros();
-            this.livroSelecionado = null;
+        if (livroDAO.delete(livroSelecionado)) {
+            addMensagem(FacesMessage.SEVERITY_INFO, "Sucesso", "Livro removido.");
+            livros.remove(livroSelecionado);
+            livroSelecionado = null;
         } else {
-            addMensagem(FacesMessage.SEVERITY_ERROR, "Erro", "Erro ao excluir o livro. Certifique-se de que não há empréstimos ou leituras ativas associadas.");
+            addMensagem(FacesMessage.SEVERITY_ERROR, "Erro", "Não foi possível excluir o livro.");
         }
     }
 
-    public String prepararEdicao() {
+    public String editar() {
         if (livroSelecionado == null) {
-            addMensagem(FacesMessage.SEVERITY_WARN, "Aviso", "Selecione um livro para prosseguir com a edição.");
+            addMensagem(FacesMessage.SEVERITY_WARN, "Aviso", "Seleccione um livro para editar.");
             return null;
         }
-        this.livro = this.livroSelecionado;
-
-        if (this.livro.getCategoriaLivro() == null) this.livro.setCategoriaLivro(new CategoriaLivro());
-        if (this.livro.getPrateleira() == null) this.livro.setPrateleira(new Prateleira());
-        
-        return "/livro/cadastro_livro?faces-redirect=true";
+        this.livro = livroSelecionado;
+        return "cadastro_livros.xhtml?faces-redirect=true";
     }
 
-    public void limpar() {
-        this.livro = new Livro();
-        this.livro.setCategoriaLivro(new CategoriaLivro());
-        this.livro.setPrateleira(new Prateleira());
+    public void carregarLivros() {
+        livros = livroDAO.findAll();
     }
 
-    public void addMensagem(FacesMessage.Severity severidade, String resumo, String detalhe) {
-        FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(severidade, resumo, detalhe));
+    public void carregarCategoriasLivro() throws SQLException {
+        categoriasLivro = categoriaLivroDAO.findAll();
     }
 
-    // Getters e Setters
+    public void carregarPrateleiras() throws SQLException {
+        prateleiras = prateleiraDAO.findAll();
+    }
+
     public Livro getLivro() {
         return livro;
     }
@@ -153,12 +173,12 @@ public class LivroBean implements Serializable {
         this.livros = livros;
     }
 
-    public List<CategoriaLivro> getCategorias() {
-        return categorias;
+    public List<CategoriaLivro> getCategoriasLivro() {
+        return categoriasLivro;
     }
 
-    public void setCategorias(List<CategoriaLivro> categorias) {
-        this.categorias = categorias;
+    public void setCategoriasLivro(List<CategoriaLivro> categoriasLivro) {
+        this.categoriasLivro = categoriasLivro;
     }
 
     public List<Prateleira> getPrateleiras() {
@@ -175,5 +195,11 @@ public class LivroBean implements Serializable {
 
     public void setFiltroTitulo(String filtroTitulo) {
         this.filtroTitulo = filtroTitulo;
+    }
+
+    private void addMensagem(FacesMessage.Severity severity, String titulo, String message) {
+        FacesMessage info = new FacesMessage(titulo, message);
+        info.setSeverity(severity);
+        FacesContext.getCurrentInstance().addMessage(null, info);
     }
 }

@@ -7,102 +7,114 @@ import jakarta.faces.view.ViewScoped;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
 import java.io.Serializable;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-import skylink.mglbiblioteca.DAO.CategoriaLivroDAO;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import skylink.mglbiblioteca.dao.CategoriaLivroDAO;
 import skylink.mglbiblioteca.model.CategoriaLivro;
 
 /**
- * @Henriques
+ * @author Henriques
  */
 @Named(value = "categoriaLivroBean")
 @ViewScoped
 public class CategoriaLivroBean implements Serializable {
 
+    private static final Logger LOGGER = Logger.getLogger(CategoriaLivroBean.class.getName());
     private static final long serialVersionUID = 1L;
 
     @Inject
-    private CategoriaLivroDAO categoriaLivroDAO;
+    private FacesContext facesContext;
 
     private CategoriaLivro categoriaLivro;
     private CategoriaLivro categoriaSelecionada;
-    private List<CategoriaLivro> categorias = new ArrayList<>();
-    private String filtroDescricao;
+    private List<CategoriaLivro> categorias;
 
-    public CategoriaLivroBean() {
-        this.categoriaLivro = new CategoriaLivro();
-    }
+    private final CategoriaLivroDAO categoriaLivroDAO;
 
     @PostConstruct
     public void inicializar() {
         try {
             carregarCategorias();
         } catch (Exception e) {
-            addMensagem(FacesMessage.SEVERITY_ERROR, "Erro", "Erro ao inicializar categorias: " + e.getMessage());
+            LOGGER.log(Level.SEVERE, "Erro ao inicializar dados no CategoriaLivroBean", e);
+            addMensagem(FacesMessage.SEVERITY_ERROR, "Erro", "Erro ao carregar categorias do banco de dados.");
         }
+    }
+
+    public CategoriaLivroBean() {
+        categoriaLivroDAO = new CategoriaLivroDAO();
+        categoriaLivro = new CategoriaLivro();
+        categorias = new ArrayList<>();
     }
 
     public void carregarCategorias() {
-        if (filtroDescricao != null && !filtroDescricao.trim().isEmpty()) {
-            this.categorias = categoriaLivroDAO.buscarPorDescricao(filtroDescricao);
-        } else {
-            this.categorias = categoriaLivroDAO.findAll();
+        try {
+            categorias = categoriaLivroDAO.findAll();
+        } catch (SQLException e) {
+            LOGGER.log(Level.SEVERE, "Erro ao buscar categorias", e);
+            addMensagem(FacesMessage.SEVERITY_ERROR, "Erro", "Erro ao listar categorias.");
         }
-    }
-
-    public void salvar() {
-        boolean sucesso;
-        if (categoriaLivro.getIdCategoriaLivro() == null) {
-            sucesso = categoriaLivroDAO.save(categoriaLivro);
-            if (sucesso) {
-                addMensagem(FacesMessage.SEVERITY_INFO, "Sucesso", "Categoria cadastrada com sucesso!");
-            }
-        } else {
-            sucesso = categoriaLivroDAO.update(categoriaLivro);
-            if (sucesso) {
-                addMensagem(FacesMessage.SEVERITY_INFO, "Sucesso", "Categoria atualizada com sucesso!");
-            }
-        }
-
-        if (sucesso) {
-            limpar();
-            carregarCategorias();
-        } else {
-            addMensagem(FacesMessage.SEVERITY_ERROR, "Erro", "Não foi possível salvar a categoria.");
-        }
-    }
-
-    public void excluir() {
-        if (categoriaSelecionada == null) {
-            addMensagem(FacesMessage.SEVERITY_WARN, "Aviso", "Selecione uma categoria para excluir.");
-            return;
-        }
-
-        if (categoriaLivroDAO.delete(categoriaSelecionada.getIdCategoriaLivro())) {
-            addMensagem(FacesMessage.SEVERITY_INFO, "Sucesso", "Categoria excluída com sucesso!");
-            carregarCategorias();
-            this.categoriaSelecionada = null;
-        } else {
-            addMensagem(FacesMessage.SEVERITY_ERROR, "Erro", "Erro ao excluir categoria. Verifique se existem livros vinculados a ela.");
-        }
-    }
-
-    public String editar() {
-        if (categoriaSelecionada == null) {
-            addMensagem(FacesMessage.SEVERITY_WARN, "Aviso", "Selecione uma categoria para editar.");
-            return null;
-        }
-        this.categoriaLivro = categoriaSelecionada;
-        return "/categoria/cadastro_categoria?faces-redirect=true";
     }
 
     public void limpar() {
         this.categoriaLivro = new CategoriaLivro();
     }
 
-    public void addMensagem(FacesMessage.Severity severidade, String resumo, String detalhe) {
-        FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(severidade, resumo, detalhe));
+    public String salvar() {
+        try {
+            if (this.categoriaLivro.getIdCategoriaLivro() == 0) {
+                boolean sucesso = categoriaLivroDAO.save(categoriaLivro);
+                if (sucesso) {
+                    addMensagem(FacesMessage.SEVERITY_INFO, "Sucesso", "Categoria cadastrada com sucesso!");
+                    limpar();
+                    carregarCategorias();
+                    return "cadastro_categoria.faces?faces-redirect=true";
+                }
+            } else {
+                boolean sucesso = categoriaLivroDAO.update(categoriaLivro);
+                if (sucesso) {
+                    addMensagem(FacesMessage.SEVERITY_INFO, "Sucesso", "Categoria atualizada com sucesso!");
+                    limpar();
+                    carregarCategorias();
+                    return "cadastro_categoria.faces?faces-redirect=true";
+                }
+            }
+        } catch (Exception e) {
+            LOGGER.log(Level.SEVERE, "Erro ao salvar categoria", e);
+            addMensagem(FacesMessage.SEVERITY_ERROR, "Erro", "Não foi possível salvar os dados.");
+        }
+        return null;
     }
+
+    public void excluir() {
+        if (categoriaSelecionada == null) {
+            addMensagem(FacesMessage.SEVERITY_WARN, "Aviso", "Selecione uma categoria na tabela.");
+            return;
+        }
+
+        try {
+            if (categoriaLivroDAO.delete(categoriaSelecionada)) {
+                addMensagem(FacesMessage.SEVERITY_INFO, "Sucesso", "Categoria removida.");
+                categorias.remove(categoriaSelecionada);
+                categoriaSelecionada = null;
+            } else {
+                addMensagem(FacesMessage.SEVERITY_ERROR, "Erro", "Não foi possível excluir a categoria.");
+            }
+        } catch (Exception e) {
+            LOGGER.log(Level.SEVERE, "Erro ao excluir categoria", e);
+            addMensagem(FacesMessage.SEVERITY_ERROR, "Erro", "Erro ao processar exclusão no banco de dados.");
+        }
+    }
+
+    private void addMensagem(FacesMessage.Severity severity, String titulo, String message) {
+        FacesMessage info = new FacesMessage(titulo, message);
+        info.setSeverity(severity);
+        facesContext.addMessage(null, info);
+    }
+
 
     public CategoriaLivro getCategoriaLivro() {
         return categoriaLivro;
@@ -126,13 +138,5 @@ public class CategoriaLivroBean implements Serializable {
 
     public void setCategorias(List<CategoriaLivro> categorias) {
         this.categorias = categorias;
-    }
-
-    public String getFiltroDescricao() {
-        return filtroDescricao;
-    }
-
-    public void setFiltroDescricao(String filtroDescricao) {
-        this.filtroDescricao = filtroDescricao;
     }
 }
