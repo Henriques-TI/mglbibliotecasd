@@ -22,7 +22,7 @@
 
                                 <h:panelGrid columns="1" style="width:100%;" styleClass="ui-fluid">
                                     <p:outputLabel value="Descrição da Categoria:" for="descricao" style="font-weight: bold; margin-top: 10px;" />
-                                    <p:inputTextarea id="descricao" value="#{categoriaLivroBean.categoriaLivro.descricaoCategoriaLivro}" 
+                                    <p:inputTextarea id="descricao" value="#{categoriaLivroBean.categoriaLivro.descricao}" 
                                                      rows="3" autoResize="false" required="true" requiredMessage="A descrição é obrigatória."/>
                                 </h:panelGrid>
 
@@ -33,7 +33,7 @@
                                                      update="frmCategoria" icon="pi pi-save" 
                                                      styleClass="ui-button-success" style="width: 100%; margin-bottom: 10px;" />
 
-                                    <p:commandButton value="Limpar Novo" action="#{categoriaLivroBean.limparPesquisa}" 
+                                    <p:commandButton value="Limpar Novo" action="#{categoriaLivroBean.limpar()}" 
                                                      update="frmCategoria" icon="pi pi-refresh" process="@this"
                                                      styleClass="ui-button-secondary" style="width: 100%;" />
                                 </div>
@@ -42,22 +42,18 @@
 
                         <div class="ui-g-12 ui-md-8">
                             <p:panel header="Categorias Cadastradas">
-                                <p:dataTable id="tblCategorias" value="#{categoriaLivroBean.listaCategorias}" var="cat" 
+                                <p:dataTable id="tblCategorias" value="#{categoriaLivroBean.categorias}" var="cat" 
                                              emptyMessage="Nenhuma categoria encontrada." rows="5" paginator="true" paginatorPosition="bottom">
                                     
-                                    <p:column headerText="ID" style="width: 50px; text-align: center;">
+                                    <p:column headerText="Código da Categoria" style="width: 50px; text-align: center;">
                                         <h:outputText value="#{cat.idCategoriaLivro}" />
                                     </p:column>
 
                                     <p:column headerText="Descrição">
-                                        <h:outputText value="#{cat.descricaoCategoriaLivro}" />
+                                        <h:outputText value="#{cat.descricao}" />
                                     </p:column>
 
-                                    <p:column headerText="Ações" style="width: 100px; text-align: center;">
-                                        <p:commandButton icon="pi pi-pencil" update="frmCategoria" process="@this" styleClass="ui-button-warning ui-button-flat">
-                                            <f:setPropertyActionListener value="#{cat}" target="#{categoriaLivroBean.categoriaLivro}" />
-                                        </p:commandButton>
-                                    </p:column>
+                                   
                                 </p:dataTable>
                             </p:panel>
                         </div>
