@@ -24,12 +24,12 @@
                                      paginator="true" rows="10" paginatorPosition="bottom"
                                      emptyMessage="Nenhum empréstimo ativo pendente encontrado.">
 
-                            <p:column headerText="Nome do Utilizador" sortBy="#{emp.idUtilizador}">
+                            <p:column headerText="Código do Utilizador" sortBy="#{emp.idUtilizador}">
                                 <h:outputText value="#{emp.idUtilizador}" />
                             </p:column>
 
-                            <p:column headerText="Título do Livro" sortBy="#{emp.livro}">
-                                <h:outputText value="#{emp.livro}" />
+                            <p:column headerText="Título do Livro" sortBy="#{emp.livro.titulo}">
+                                <h:outputText value="#{emp.livro.titulo}" />
                             </p:column>
 
                             <p:column headerText="Data de Retirada" style="width: 180px; text-align: center;">

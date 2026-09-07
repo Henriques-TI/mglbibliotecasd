@@ -6,7 +6,10 @@
       xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
 
     <ui:composition template="./../WEB-INF/templates/template_leitura.xhtml">
-        <ui:define name="title">Gestão de Empréstimos - MGLBiblioteca</ui:define>
+        <ui:define name="title">Gestão de Empréstimos -Biblioteca</ui:define>
+
+        <p:growl id="mensagens" showDetail="true" />
+
         <h:form id="formRegisto">
             <p:panel header="Registar Novo Empréstimo" style="margin-bottom: 20px;">
                 <h:panelGrid columns="2" cellpadding="5">
@@ -50,7 +53,8 @@
                                      update="formLista, mensagens" icon="pi pi-search" />
 
                     <p:commandButton value="Limpar" action="#{emprestimoBean.limparPesquisa()}" 
-                                     update="formFiltro, formLista, mensagens" icon="pi pi-times" styleClass="ui-button-secondary" />
+                                     update="formFiltro, formLista, mensagens" icon="pi pi-times"
+                                     styleClass="ui-button-secondary" process="@this" immediate="true" />
                 </h:panelGrid>
             </p:panel>
         </h:form>
@@ -91,5 +95,5 @@
             </p:dataTable>
         </h:form>
 
-        </h:body>
+    </ui:composition>
 </html>

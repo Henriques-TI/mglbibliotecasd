@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+
+    <ui:composition template="./../WEB-INF/templates/template_leitura.xhtml">
+        <ui:define name="title">Gestão de Empréstimos -Biblioteca</ui:define>
+
+        <p:growl id="mensagens" showDetail="true" />
+
+        <h:form id="formRegisto">
+            <p:panel header="Registar Novo Empréstimo" style="margin-bottom: 20px;">
+                <h:panelGrid columns="2" cellpadding="5">
+
+                    <p:outputLabel for="idUtilizador" value="ID do Utilizador:" />
+                    <p:inputText id="idUtilizador" value="#{emprestimoBean.emprestimo.idUtilizador}" 
+                                 required="true" requiredMessage="O ID do utilizador é obrigatório." />
+
+                    <p:outputLabel for="livro" value="Selecionar Livro:" />
+                    <p:selectOneMenu id="livro" value="#{emprestimoBean.emprestimo.livro.idLivro}" 
+                                     required="true" requiredMessage="Selecione um livro da lista.">
+                        <f:selectItem itemLabel="-- Escolha um Livro --" itemValue="" noSelectionOption="true" />
+                        <f:selectItems value="#{emprestimoBean.livrosDisponiveis}" var="l"
+                                       itemLabel="#{l.titulo} (ID: #{l.idLivro})" itemValue="#{l.idLivro}" />
+                    </p:selectOneMenu>
+
+                    <p:outputLabel for="dataRetirada" value="Data de Empréstimo:" />
+                    <p:datePicker id="dataRetirada" value="#{emprestimoBean.emprestimo.dataRetirada}" 
+                                  pattern="dd/MM/yyyy" required="true" requiredMessage="A data é obrigatória." />
+
+                    <p:outputLabel for="dataDevolucao" value="Data de Devolução Prevista:" />
+                    <p:datePicker id="dataDevolucao" value="#{emprestimoBean.emprestimo.dataDevolucaoPrevista}" 
+                                  pattern="dd/MM/yyyy" required="true" requiredMessage="A data de devolução é obrigatória." />
+
+                </h:panelGrid>
+
+                <p:commandButton value="Gravar Empréstimo" 
+                                 action="#{emprestimoBean.salvar()}" 
+                                 update="formRegisto, formLista, mensagens" 
+                                 style="margin-top: 10px;" icon="pi pi-save" />
+            </p:panel>
+        </h:form>
+
+        <h:form id="formFiltro">
+            <p:panel header="Filtros de Pesquisa" style="margin-bottom: 20px;">
+                <h:panelGrid columns="4" cellpadding="5">
+                    <p:outputLabel for="filtroUser" value="ID Utilizador:" />
+                    <p:inputText id="filtroUser" value="#{emprestimoBean.filtroIdUtilizador}" />
+
+                    <p:commandButton value="Pesquisar" action="#{emprestimoBean.pesquisar()}" 
+                                     update="formLista, mensagens" icon="pi pi-search" />
+
+                    <p:commandButton value="Limpar" action="#{emprestimoBean.limparPesquisa()}" 
+                                     update="formFiltro, formLista, mensagens" icon="pi pi-times"
+                                     styleClass="ui-button-secondary" process="@this" immediate="true" />
+                </h:panelGrid>
+            </p:panel>
+        </h:form>
+
+        <h:form id="formLista">
+            <p:dataTable id="tabelaEmprestimos" value="#{emprestimoBean.listaEmprestimos}" var="emp"
+                         emptyMessage="Nenhum empréstimo registado." rows="10" paginator="true"
+                         paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}">
+
+                <f:facet name="header">
+                    Lista de Empréstimos Ativos
+                </f:facet>
+
+                <p:column headerText="ID Empréstimo">
+                    <h:outputText value="#{emp.idEmprestimo}" />
+                </p:column>
+
+                <p:column headerText="ID Utilizador">
+                    <h:outputText value="#{emp.idUtilizador}" />
+                </p:column>
+
+                <p:column headerText="Livro">
+                    <h:outputText value="#{emp.livro.titulo}" />
+                </p:column>
+
+                <p:column headerText="Data Empréstimo">
+                    <h:outputText value="#{emp.dataRetirada}">
+                        <f:convertDateTime pattern="dd/MM/yyyy" type="localDate" />
+                    </h:outputText>
+                </p:column>
+
+                <p:column headerText="Devolução Prevista">
+                    <h:outputText value="#{emp.dataDevolucaoPrevista}">
+                        <f:convertDateTime pattern="dd/MM/yyyy" type="localDate" />
+                    </h:outputText>
+                </p:column>
+
+            </p:dataTable>
+        </h:form>
+
+    </ui:composition>
+</html>

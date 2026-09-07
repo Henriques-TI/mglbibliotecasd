@@ -31,10 +31,11 @@
 
                                 <h:panelGroup>
                                     <p:commandButton value="Pesquisar" action="#{emprestimoAtivoBean.pesquisar}" 
-                                                     icon="pi pi-search" styleClass="ui-button-info" style="margin-right: .5rem;" />
+                                                     icon="pi pi-search" styleClass="ui-button-info" style="margin-right: .5rem;"
+                                                     update="mensagensFiltro" />
 
                                     <p:commandButton value="Limpar" action="#{emprestimoAtivoBean.limparPesquisa}" 
-                                                     icon="pi pi-refresh" styleClass="ui-button-flat" update="txtDescricao" />
+                                                     icon="pi pi-refresh" styleClass="ui-button-flat" update="txtDescricao mensagensFiltro" />
                                 </h:panelGroup>
 
                             </h:panelGrid>
